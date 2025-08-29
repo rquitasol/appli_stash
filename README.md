@@ -36,7 +36,7 @@ appli_stash/
 - **Name** - Company Name
 - **Position** - Job title/role
 - **Application Date** - When you applied
-- **Status** - Current stage in process
+
   - `Saved`
   - `Applied`
   - `Phone Screen`
@@ -44,6 +44,7 @@ appli_stash/
   - `Offer`
   - `Rejected`
   - `Withdrawn`
+
 - **Job URL** - Link to original posting
 - **Salary Range** - Expected compensation
 - **Location** - Job location (Remote/City/State)
@@ -116,27 +117,30 @@ appli_stash/
 3. **Start development servers:**
 
    ```bash
-   # Terminal 1: Start web dashboard
-   cd web
-   npm start
 
-   # Terminal 2: Build extension for development
-   cd extension
    npm run build:dev
    ```
 
-4. **Load Chrome extension:**
-   - Open Chrome and go to `chrome://extensions/`
-   - Enable "Developer mode"
-   - Click "Load unpacked" and select the `extension/dist` folder
-
-## Tech Stack
-
-- **Frontend**: React, TypeScript
+- **Frontend**: Next.js (React), TypeScript
+- **Styling**: Tailwind CSS
+- **Linting**: ESLint
 - **Extension**: Chrome Extension API v3
-- **Styling**: CSS Modules / Tailwind CSS
+- **Storage**: Chrome Storage API, IndexedDB
+- **Bundler**: Turbopack (Next.js default)
+
+4. **Load Chrome extension:**
+
 - **Build Tools**: Webpack, Babel
 - **Storage**: Chrome Storage API, IndexedDB
+- [ ] Next.js web dashboard
+- [ ] Basic extension overlay functionality
+- [ ] Application status tracking
+- [ ] Dashboard with kanban board view
+- [ ] Interview scheduling integration
+- [ ] Document management
+- [ ] Analytics and insights
+- [ ] Multi-browser support
+- [ ] Mobile companion app
 
 ## Roadmap
 
