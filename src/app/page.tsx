@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import React from 'react';
 import Link from 'next/link';
 import { LoginForm } from '../components/forms/LoginForm';

@@ -38,7 +38,7 @@ export function LoginForm() {
         // handle successful login (e.g., redirect)
         window.location.href = '/dashboard';
       }
-    } catch (err) {
+    } catch {
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
