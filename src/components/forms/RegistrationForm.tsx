@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '../ui/alert'
 import { Loader2 } from 'lucide-react';
 
 // TypeScript interfaces
-interface SignUpFormData {
+interface RegistrationFormData {
   name: string;
   email: string;
   password: string;
@@ -27,7 +27,7 @@ interface ApiResponse {
 
 // Custom hook for form validation
 function useFormValidation() {
-  const validateForm = useCallback((formData: SignUpFormData): ValidationErrors => {
+  const validateForm = useCallback((formData: RegistrationFormData): ValidationErrors => {
     const errors: ValidationErrors = {};
     
     // Name validation
@@ -60,9 +60,9 @@ function useFormValidation() {
   return { validateForm };
 }
 
-async function signUp(userData: SignUpFormData): Promise<ApiResponse> {
+async function signUp(userData: RegistrationFormData): Promise<ApiResponse> {
     try {
-      const response = await fetch('/api/login/sign-up', {
+  const response = await fetch('/api/register', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -85,9 +85,9 @@ async function signUp(userData: SignUpFormData): Promise<ApiResponse> {
     }
   };
 
-export function SignUpForm() {
+export function RegistrationForm() {
   // Form state
-  const [formData, setFormData] = useState<SignUpFormData>({
+  const [formData, setFormData] = useState<RegistrationFormData>({
     name: '',
     email: '',
     password: ''
@@ -103,7 +103,7 @@ export function SignUpForm() {
   const { validateForm } = useFormValidation();
 
   // Handle input changes with validation
-  const handleInputChange = useCallback((field: keyof SignUpFormData) => 
+  const handleInputChange = useCallback((field: keyof RegistrationFormData) => 
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       
