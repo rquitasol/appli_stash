@@ -8,7 +8,7 @@ export default async function DashboardPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
   const user = token ? verifyJwt(token) : null;
-  if (!user) redirect("/login");
+  if (!user) redirect("/");
   return (
     <div className="flex flex-col h-screen w-full">
       <div className="flex-shrink-0" style={{height: '5%'}}>
