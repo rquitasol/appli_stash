@@ -66,10 +66,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     return NextResponse.json({ user: data[0] }, { status: 201 });
-  } catch (err: any) {
-    return NextResponse.json(
-      { error: err.message, details: err },
-      { status: 500 }
-    );
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: message, details: err }, { status: 500 });
   }
 }
