@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
     // Create JWT token
     const user = data && data[0] ? data[0] : null;
     if (!user) {
+      console.error("User not found after authentication.");
       return NextResponse.json(
         { error: "User not found after authentication." },
         { status: 500 }
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
       email: user.email,
       name: user.name,
     });
+    console.log("Generated JWT token:", token);
 
     // Set token as HTTP-only cookie
     const response = NextResponse.json(

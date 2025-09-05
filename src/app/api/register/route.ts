@@ -62,10 +62,27 @@ export async function POST(request: NextRequest) {
       );
     }
     console.log("Registration successful for:", email);
-    return NextResponse.json(
-      { success: true, user: newUser[0] },
+    // Create JWT token with user data
+    const user = newUser[0];
+    const { signJwt } = await import("../../../lib/jwt");
+    const token = signJwt({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    });
+    // Set token as HTTP-only cookie
+    const response = NextResponse.json(
+      { success: true, user },
       { status: 201 }
     );
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+    return response;
   } catch (error) {
     console.error("Registration error: Unexpected", error);
     return NextResponse.json(

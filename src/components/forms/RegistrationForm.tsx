@@ -141,14 +141,14 @@ export function RegistrationForm() {
     setIsLoading(true);
     
     try {
-      await signUp(formData);
-      
-      // Success handling
-      setIsSuccess(true);
-      setFormData({ name: '', email: '', password: '' });
-      
-      // Optional: Redirect after successful registration
-      // setTimeout(() => router.push('/login'), 2000);
+  await signUp(formData);
+
+  // Success handling
+  setIsSuccess(true);
+  setFormData({ name: '', email: '', password: '' });
+
+  // Redirect to dashboard after successful registration
+  window.location.href = '/dashboard';
       
     } catch (error) {
       setApiError(error instanceof Error ? error.message : 'Registration failed');
@@ -156,23 +156,6 @@ export function RegistrationForm() {
       setIsLoading(false);
     }
   };
-
-  // Success state
-  if (isSuccess) {
-    return (
-      <div className="text-center space-y-4">
-        <div className="text-green-600 text-lg font-medium">
-          ✅ Registration Successful!
-        </div>
-        <div className="text-slate-600">
-          Please check your email to verify your account.
-        </div>
-        <Button onClick={() => setIsSuccess(false)}>
-          Register Another Account
-        </Button>
-      </div>
-    );
-  }
 
   return (
   <form className="space-y-6" onSubmit={handleSubmit} noValidate>
