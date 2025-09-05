@@ -1,13 +1,13 @@
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
 import { cookies } from "next/headers";
-import { verifyJwt } from "../../lib/jwt";
+import { verifyJwt, JwtUser } from "../../lib/jwt";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  const user = token ? verifyJwt(token) : null;
+  const user = token ? verifyJwt(token) as JwtUser : null;
   if (!user) redirect("/");
   return (
     <div className="flex flex-col h-screen w-full">

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyJwt } from "../../../lib/jwt";
+
+import { verifyJwt, JwtUser } from "../../../lib/jwt";
 
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
@@ -17,6 +18,6 @@ export async function GET(request: NextRequest) {
     );
   }
   // Only return safe user info
-  const { id, email, name } = user as any;
+  const { id, email, name } = user as JwtUser;
   return NextResponse.json({ id, email, name });
 }

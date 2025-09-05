@@ -97,7 +97,6 @@ export function RegistrationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [apiError, setApiError] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
   
   // Custom hooks
   const { validateForm } = useFormValidation();
@@ -127,7 +126,6 @@ export function RegistrationForm() {
     
     // Reset states
     setApiError('');
-    setIsSuccess(false);
     
     // Validate form
     const validationErrors = validateForm(formData);
@@ -144,7 +142,6 @@ export function RegistrationForm() {
   await signUp(formData);
 
   // Success handling
-  setIsSuccess(true);
   setFormData({ name: '', email: '', password: '' });
 
   // Redirect to dashboard after successful registration
