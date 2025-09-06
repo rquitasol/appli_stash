@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Button } from "../ui/Button";
+import { Input } from "../ui/Input";
+import { Alert, AlertDescription } from "../ui/Alert";
 import type { Application } from "../../app/api/application/route";
 
 const initialForm: Omit<Application, "id" | "user_id"> = {
