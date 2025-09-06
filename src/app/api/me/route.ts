@@ -1,23 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { verifyJwt, JwtUser } from "../../../lib/jwt";
-
 export async function GET(request: NextRequest) {
-  const token = request.cookies.get("token")?.value;
-  if (!token) {
+  const access_token = request.cookies.get(
+    "sb-access-token"
+  )?.value;
+  if (!access_token) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
     );
   }
-  const user = verifyJwt(token);
-  if (!user) {
+  // Use Supabase client to get user info from access_token
+  const { getSupabaseForUser } = await import(
+    "../../../lib/supabaseClient"
+  );
+  const supabaseUser = getSupabaseForUser(access_token);
+  const { data: userData, error: userError } =
+    await supabaseUser.auth.getUser();
+  if (userError || !userData.user) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
     );
   }
-  // Only return safe user info
-  const { id, email, name } = user as JwtUser;
+  const { id, email, user_metadata } = userData.user;
+  const name = user_metadata?.name || null;
   return NextResponse.json({ id, email, name });
 }

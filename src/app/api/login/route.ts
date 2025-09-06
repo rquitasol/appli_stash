@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "../../../lib/supabaseClient";
 import { encryptPassword } from "../../../lib/encryption";
-import { signJwt } from "../../../lib/jwt";
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,19 +40,30 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-    const token = signJwt({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-    });
-    console.log("Generated JWT token:", token);
-
-    // Set token as HTTP-only cookie
+    // Get Supabase Auth access_token for this user
+    // (Assume user is already registered in Supabase Auth)
+    const { data: signInData, error: signInError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+    if (signInError || !signInData.session) {
+      return NextResponse.json(
+        {
+          error:
+            signInError?.message ||
+            "Failed to sign in with Supabase Auth",
+        },
+        { status: 401 }
+      );
+    }
+    const access_token = signInData.session.access_token;
+    // Set Supabase Auth access_token as HTTP-only cookie
     const response = NextResponse.json(
       { user },
       { status: 200 }
     );
-    response.cookies.set("token", token, {
+    response.cookies.set("sb-access-token", access_token, {
       httpOnly: true,
       path: "/",
       sameSite: "lax",

@@ -1,12 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "../../../lib/supabaseClient";
+import {
+  supabase,
+  supabaseAdmin,
+} from "../../../lib/supabaseClient";
 import { encryptPassword } from "../../../lib/encryption";
+
+function logError(context: string, error: unknown) {
+  if (error instanceof Error) {
+    console.error(
+      `[${context}]`,
+      error.message,
+      error.stack
+    );
+  } else {
+    console.error(`[${context}]`, error);
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
     const { email, password, name } = await request.json();
     if (!email || !password || !name) {
-      console.error(
+      logError(
         "Registration error: Missing required fields",
         { email, password, name }
       );
@@ -15,67 +30,81 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    // Check if email already exists
-    const { data: existing, error: checkError } =
-      await supabase
-        .from("user")
-        .select("id")
-        .eq("email", email);
-    if (checkError) {
-      console.error(
-        "Registration error: DB check",
-        checkError.message
-      );
+    // 1. Create user in Supabase Auth
+    const { data: authUser, error: authError } =
+      await supabaseAdmin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { name },
+      });
+    if (authError) {
+      logError("Supabase Auth Create User", authError);
+      if (
+        authError.message &&
+        authError.message.includes("not allowed")
+      ) {
+        logError("User not allowed", authError);
+      }
       return NextResponse.json(
-        { error: checkError.message },
+        { error: authError.message },
         { status: 500 }
       );
     }
-    if (existing.length > 0) {
-      console.warn(
-        "Registration attempt for existing email:",
-        email
-      );
+    const supabaseUserId = authUser.user?.id;
+    if (!supabaseUserId) {
+      logError("No Supabase user id returned", authUser);
       return NextResponse.json(
-        { error: "Email already registered" },
-        { status: 409 }
+        { error: "Failed to create user in auth." },
+        { status: 500 }
       );
     }
-    // Encrypt password
+    // 2. Insert into custom user table
     const encryptedPassword = encryptPassword(password);
-    // Insert new user
     const { data: newUser, error: insertError } =
       await supabase
         .from("user")
         .insert([
-          { email, password: encryptedPassword, name },
+          {
+            id: supabaseUserId,
+            email,
+            name,
+            password: encryptedPassword,
+          },
         ])
         .select();
     if (insertError) {
-      console.error(
-        "Registration error: Insert failed",
-        insertError.message
-      );
+      logError("Insert custom user table", insertError);
       return NextResponse.json(
         { error: insertError.message },
         { status: 500 }
       );
     }
-    console.log("Registration successful for:", email);
-    // Create JWT token with user data
+    // 3. Sign in to get Supabase Auth access_token
     const user = newUser[0];
-    const { signJwt } = await import("../../../lib/jwt");
-    const token = signJwt({
-      id: user.id,
-      email: user.email,
-      name: user.name,
-    });
-    // Set token as HTTP-only cookie
+    const { data: signInData, error: signInError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+    if (signInError || !signInData.session) {
+      logError("Supabase Auth signIn", signInError);
+      return NextResponse.json(
+        {
+          error:
+            signInError?.message ||
+            "Failed to sign in after registration",
+        },
+        { status: 500 }
+      );
+    }
+    const access_token = signInData.session.access_token;
+    // 4. Set Supabase Auth access_token as HTTP-only cookie
     const response = NextResponse.json(
       { success: true, user },
       { status: 201 }
     );
-    response.cookies.set("token", token, {
+    response.cookies.set("sb-access-token", access_token, {
       httpOnly: true,
       path: "/",
       sameSite: "lax",
@@ -84,7 +113,7 @@ export async function POST(request: NextRequest) {
     });
     return response;
   } catch (error) {
-    console.error("Registration error: Unexpected", error);
+    logError("Registration error: Unexpected", error);
     return NextResponse.json(
       {
         error:

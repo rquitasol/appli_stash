@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
 
 export function LoginForm() {
   const [email, setEmail] = useState('');
@@ -66,7 +66,9 @@ export function LoginForm() {
         required
       />
       {error && <div className="text-red-600 text-sm">{error}</div>}
-      <Button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</Button>
+      <div className="flex justify-center">
+        <Button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</Button>
+      </div>
     </form>
   );
 }

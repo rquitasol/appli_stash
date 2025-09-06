@@ -1,9 +1,9 @@
 
 "use client";
 import React, { useState, useCallback } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Alert, AlertDescription } from '../ui/alert'
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { Alert, AlertDescription } from '../ui/Alert';
 import { Loader2 } from 'lucide-react';
 
 // TypeScript interfaces
@@ -238,20 +238,22 @@ export function RegistrationForm() {
       </div>
 
       {/* Submit Button */}
-      <Button 
-        type="submit" 
-        disabled={isLoading}
-        
-      >
-        {isLoading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creating Account...
-          </>
-        ) : (
-          'Create Account'
-        )}
-      </Button>
+      <div className="flex justify-center">
+        <Button 
+          type="submit" 
+          disabled={isLoading}
+          
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Creating Account...
+            </>
+          ) : (
+            'Create Account'
+          )}
+        </Button>
+      </div>
     </form>
   );
 }
