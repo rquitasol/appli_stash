@@ -1,9 +1,9 @@
 
 "use client";
 import React, { useState, useCallback } from 'react';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
-import { Alert, AlertDescription } from '../ui/Alert';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Alert, AlertDescription } from '../ui/alert';
 import { Loader2 } from 'lucide-react';
 
 // TypeScript interfaces
