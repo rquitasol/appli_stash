@@ -16,18 +16,48 @@ AppliStash is a Chrome extension and companion web app that helps you track job 
 
 ```
 appli_stash/
-├── extension/          # Chrome extension source
-│   ├── manifest.json   # Extension configuration
-│   ├── background/     # Background scripts
-│   ├── content/        # Content injection scripts
-│   └── popup/          # Extension popup UI
-├── web/               # React web dashboard
-│   ├── src/           # Web app source code
-│   └── public/        # Static assets
-└── shared/            # Shared utilities & models
-    ├── models/        # Data models
-    └── utils/         # Common functions
+├── src/
+│   ├── app/
+│   │   ├── api/           # API routes (application, login, register, etc.)
+│   │   ├── dashboard/     # Dashboard pages
+│   │   ├── login/         # Login page
+│   │   ├── register/      # Registration page
+│   │   ├── layout.tsx     # Root layout
+│   │   └── page.tsx       # Home page
+│   ├── components/
+│   │   ├── context/       # User context provider
+│   │   ├── forms/         # Application, Login, Registration forms
+│   │   ├── layout/        # Header, Footer
+│   │   └── ui/            # UI elements (Button, Input, Modal, Alert)
+│   ├── hooks/
+│   ├── lib/               # Utility libraries (encryption, JWT, Supabase)
+│   ├── store/
+│   ├── styles/
+│   └── types/
+├── public/
+├── package.json
+├── tsconfig.json
+├── next.config.ts
+├── postcss.config.mjs
+├── eslint.config.mjs
+└── README.md
 ```
+
+**Key Features:**
+
+- Next.js 15, React 19, TypeScript, Tailwind CSS
+- Supabase for authentication and data storage
+- Custom API routes for login, registration, and application CRUD
+- User context for authentication state
+- Dashboard with modal form for adding applications
+- Modular, modern UI components
+
+**Recent changes:**
+
+- Project structure is now monolithic Next.js (no separate extension/web folders)
+- All business logic and UI are in `src/`
+- API routes handle authentication and application management
+- Forms and UI are fully componentized
 
 ## Data Models
 
