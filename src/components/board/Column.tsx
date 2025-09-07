@@ -6,11 +6,6 @@ import { ApplicationItem } from "./ApplicationItem";
 interface ColumnProps {
   status: ApplicationStatus;
   items: Application[];
-}
-
-interface ColumnProps {
-  status: ApplicationStatus;
-  items: Application[];
   onItemClick?: (application: Application) => void;
 }
 

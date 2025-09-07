@@ -3,7 +3,7 @@ import type { Application } from "../../types/Application";
 
 interface ApplicationItemProps {
   application: Application;
-  onClick?: (application: Application) => void;
+  onClick?: ((application: Application) => void) | undefined;
 }
 
 export function ApplicationItem({ application, onClick }: ApplicationItemProps) {

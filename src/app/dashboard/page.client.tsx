@@ -8,32 +8,22 @@ import { Modal } from "../../components/ui/Modal";
 import { ApplicationForm } from "@/components/forms/ApplicationForm";
 import { Board } from "../../components/board/Board";
 import type { Application } from "../../types/Application";
-import { ApplicationStatus } from "../../types/ApplicationStatus";
+
 
 
 export default function DashboardPage() {
+  const { user, loading } = useUser();
   const [modalOpen, setModalOpen] = useState(false);
   const [editApp, setEditApp] = useState<Application | null>(null);
-  const { user, loading } = useUser();
+  const [applications, setApplications] = useState<Application[]>([]);
+  const [appLoading, setAppLoading] = useState(true);
+  const [appError, setAppError] = useState("");
 
   useEffect(() => {
     if (!loading && !user) {
       window.location.href = "/login";
     }
   }, [user, loading]);
-
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
-  if (!user) {
-    // Optionally render nothing or a spinner while redirecting
-    return null;
-  }
-
-
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [appLoading, setAppLoading] = useState(true);
-  const [appError, setAppError] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -57,6 +47,14 @@ export default function DashboardPage() {
       })
       .finally(() => setAppLoading(false));
   }, [user]);
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+  if (!user) {
+    // Optionally render nothing or a spinner while redirecting
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-screen w-full">
