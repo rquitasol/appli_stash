@@ -24,7 +24,6 @@ interface ApplicationFormProps {
   onSuccess?: () => void;
 }
 
-import { useEffect } from "react";
 export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
   const [form, setForm] = useState<Omit<Application, "id" | "user_id">>({
     ...defaultForm,
