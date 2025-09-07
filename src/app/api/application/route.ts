@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSupabaseForUser } from "../../../lib/supabaseClient";
 import { logError } from "../../../lib/jwtUtils";
 
+import { ApplicationPriority } from "../../../types/ApplicationPriority";
+import { ApplicationStatus } from "../../../types/ApplicationStatus";
 export interface Application {
   id?: string;
   user_id: string;
   company_name: string;
   url: string;
-  status: string;
+  status: ApplicationStatus;
   position: string;
-  priority_level: string;
+  priority_level: ApplicationPriority;
   notes: string;
 }
 
@@ -40,6 +42,13 @@ export async function POST(request: NextRequest) {
     position,
     priority_level,
     notes,
+  }: {
+    company_name: string;
+    url: string;
+    status: ApplicationStatus;
+    position: string;
+    priority_level: ApplicationPriority;
+    notes: string;
   } = body;
   // Get user id from JWT
   const { data: userData, error: userError } =

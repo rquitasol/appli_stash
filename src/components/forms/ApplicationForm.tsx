@@ -7,6 +7,7 @@ import { TextArea } from "../ui/TextArea";
 import { Alert, AlertDescription } from "../ui/Alert";
 import type { Application } from "../../types/Application";
 import { ApplicationStatus } from "../../types/ApplicationStatus";
+import { ApplicationPriority } from "../../types/ApplicationPriority";
 
 
 const defaultForm: Omit<Application, "id" | "user_id"> = {
@@ -14,15 +15,17 @@ const defaultForm: Omit<Application, "id" | "user_id"> = {
   url: "",
   status: ApplicationStatus.Saved,
   position: "",
-  priority_level: "",
+  priority_level: ApplicationPriority.Low,
   notes: "",
 };
 
 interface ApplicationFormProps {
   initial?: Partial<Application>;
+  onSuccess?: () => void;
 }
 
-export function ApplicationForm({ initial }: ApplicationFormProps) {
+import { useEffect } from "react";
+export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
   const [form, setForm] = useState<Omit<Application, "id" | "user_id">>({
     ...defaultForm,
     ...initial,
@@ -30,6 +33,7 @@ export function ApplicationForm({ initial }: ApplicationFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target;
@@ -54,7 +58,14 @@ export function ApplicationForm({ initial }: ApplicationFormProps) {
         setError(data.error || "Failed to add application");
       } else {
         setSuccess("Application added successfully!");
-  setForm(defaultForm);
+        setShowSuccess(true);
+        setForm(defaultForm);
+        if (onSuccess) {
+          setTimeout(() => {
+            setShowSuccess(false);
+            onSuccess();
+          }, 3000);
+        }
       }
     } catch {
       setError("Network error. Please try again.");
@@ -70,8 +81,8 @@ export function ApplicationForm({ initial }: ApplicationFormProps) {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
-      {success && (
-        <Alert>
+      {showSuccess && (
+        <Alert type="success">
           <AlertDescription>{success}</AlertDescription>
         </Alert>
       )}
@@ -115,13 +126,17 @@ export function ApplicationForm({ initial }: ApplicationFormProps) {
         />
       </div>
       <div className="space-y-2">
-        <Input
+        <Select
           label="Priority Level"
           name="priority_level"
           value={form.priority_level}
           onChange={handleChange}
           required
-        />
+        >
+          {Object.values(ApplicationPriority).map((priority) => (
+            <option key={priority} value={priority}>{priority}</option>
+          ))}
+        </Select>
       </div>
       <TextArea
         label="Notes"

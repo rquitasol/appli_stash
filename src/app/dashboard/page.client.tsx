@@ -71,7 +71,29 @@ export default function DashboardPage() {
           </button>
         </div>
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add Application">
-          <ApplicationForm />
+          <ApplicationForm
+            onSuccess={() => {
+              setModalOpen(false);
+              // reload applications
+              setAppLoading(true);
+              fetch("/api/application", { credentials: "include" })
+                .then(async (res) => {
+                  if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || "Failed to fetch applications");
+                  }
+                  return res.json();
+                })
+                .then((data) => {
+                  setApplications(data);
+                  setAppError("");
+                })
+                .catch((err) => {
+                  setAppError(err.message || "Failed to fetch applications");
+                })
+                .finally(() => setAppLoading(false));
+            }}
+          />
         </Modal>
         <Modal isOpen={!!editApp} onClose={() => setEditApp(null)} title="Edit Application">
           {editApp && <ApplicationForm initial={editApp} />}
