@@ -2,13 +2,16 @@
 import React, { useState } from "react";
 import { Button } from "../ui/Button";
 import { Input } from "../ui/Input";
+import { Select } from "../ui/Select";
+import { TextArea } from "../ui/TextArea";
 import { Alert, AlertDescription } from "../ui/Alert";
-import type { Application } from "../../app/api/application/route";
+import type { Application } from "../../types/Application";
+import { ApplicationStatus } from "../../types/ApplicationStatus";
 
 const initialForm: Omit<Application, "id" | "user_id"> = {
   company_name: "",
   url: "",
-  status: "",
+  status: ApplicationStatus.Saved,
   position: "",
   priority_level: "",
   notes: "",
@@ -20,7 +23,7 @@ export function ApplicationForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     setError("");
@@ -82,15 +85,18 @@ export function ApplicationForm() {
           required
         />
       </div>
-      <div className="space-y-2">
-        <Input
-          label="Status"
-          name="status"
-          value={form.status}
-          onChange={handleChange}
-          required
-        />
-      </div>
+      <Select
+        label="Status"
+        id="status"
+        name="status"
+        value={form.status}
+        onChange={handleChange}
+        required
+      >
+        {Object.values(ApplicationStatus).map((status) => (
+          <option key={status} value={status}>{status}</option>
+        ))}
+      </Select>
       <div className="space-y-2">
         <Input
           label="Position"
@@ -109,17 +115,14 @@ export function ApplicationForm() {
           required
         />
       </div>
-      <div className="space-y-2">
-        <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-        <textarea
-          id="notes"
-          name="notes"
-          value={form.notes}
-          onChange={handleChange}
-          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300"
-          rows={3}
-        />
-      </div>
+      <TextArea
+        label="Notes"
+        id="notes"
+        name="notes"
+        value={form.notes}
+        onChange={handleChange}
+        rows={3}
+      />
         <div className="flex justify-center">
           <Button type="submit" disabled={isLoading}>
             {isLoading ? "Adding..." : "Add Application"}
