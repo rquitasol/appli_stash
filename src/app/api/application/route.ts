@@ -78,6 +78,35 @@ export async function POST(request: NextRequest) {
 
 // READ (all for user)
 export async function GET(request: NextRequest) {
+  // If userId is provided as a query param, fetch all applications for that user (admin/API use)
+  const { searchParams } = new URL(request.url);
+  const userIdParam = searchParams.get("userId");
+  if (userIdParam) {
+    // Only allow this for authorized/admin users in production!
+    const access_token = request.cookies.get(
+      "sb-access-token"
+    )?.value;
+    if (!access_token) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+    const supabaseUser = getSupabaseForUser(access_token);
+    const { data, error } = await supabaseUser
+      .from("application")
+      .select("*")
+      .eq("user_id", userIdParam);
+    if (error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json(data);
+  }
+
+  // Default: get all applications for the current user (from JWT)
   const access_token = request.cookies.get(
     "sb-access-token"
   )?.value;

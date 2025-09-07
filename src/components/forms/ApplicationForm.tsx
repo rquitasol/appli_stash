@@ -8,7 +8,8 @@ import { Alert, AlertDescription } from "../ui/Alert";
 import type { Application } from "../../types/Application";
 import { ApplicationStatus } from "../../types/ApplicationStatus";
 
-const initialForm: Omit<Application, "id" | "user_id"> = {
+
+const defaultForm: Omit<Application, "id" | "user_id"> = {
   company_name: "",
   url: "",
   status: ApplicationStatus.Saved,
@@ -17,8 +18,15 @@ const initialForm: Omit<Application, "id" | "user_id"> = {
   notes: "",
 };
 
-export function ApplicationForm() {
-  const [form, setForm] = useState(initialForm);
+interface ApplicationFormProps {
+  initial?: Partial<Application>;
+}
+
+export function ApplicationForm({ initial }: ApplicationFormProps) {
+  const [form, setForm] = useState<Omit<Application, "id" | "user_id">>({
+    ...defaultForm,
+    ...initial,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -46,7 +54,7 @@ export function ApplicationForm() {
         setError(data.error || "Failed to add application");
       } else {
         setSuccess("Application added successfully!");
-        setForm(initialForm);
+  setForm(defaultForm);
       }
     } catch {
       setError("Network error. Please try again.");
