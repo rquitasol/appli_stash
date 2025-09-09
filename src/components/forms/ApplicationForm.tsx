@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { Button } from "../ui/Button";
-import { Input } from "../ui/Input";
-import { Select } from "../ui/Select";
-import { TextArea } from "../ui/TextArea";
-import { Alert, AlertDescription } from "../ui/Alert";
+import { Button } from "@shared/components/ui/Button";
+import { Input } from "@shared/components/ui/Input";
+import { Select } from "@shared/components/ui/Select";
+import { TextArea } from "@shared/components/ui/TextArea";
+import { Alert, AlertDescription } from "@shared/components/ui/Alert";
 import type { Application } from "../../types/Application";
 import { ApplicationStatus } from "../../types/ApplicationStatus";
 import { ApplicationPriority } from "../../types/ApplicationPriority";
