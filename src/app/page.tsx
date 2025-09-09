@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { LoginForm } from '../components/forms/LoginForm';
+import { LoginForm } from '@shared/components/forms/LoginForm';
 
 export default function Home() {
   return (

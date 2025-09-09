@@ -38,37 +38,33 @@ export function LoginForm() {
         // handle successful login (e.g., redirect)
         window.location.href = '/dashboard';
       }
-    } catch {
-      setError('Network error. Please try again.');
+    } catch (err) {
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <Input
-        label="Email"
         type="email"
-        id="email"
-        name="email"
+        label='Email'
         value={email}
-        onChange={e => setEmail(e.target.value)}
-        required
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
       />
       <Input
-        label="Password"
         type="password"
-        id="password"
-        name="password"
+        label='Password'
         value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
       />
-      {error && <div className="text-red-600 text-sm">{error}</div>}
-      <div className="flex justify-center">
-        <Button type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Login'}</Button>
-      </div>
+      {error && <div className="error">{error}</div>}
+      <Button type="submit" disabled={loading}>
+        {loading ? 'Loading...' : 'Login'}
+      </Button>
     </form>
   );
 }
