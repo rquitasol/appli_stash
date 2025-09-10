@@ -1,9 +1,3 @@
-// Returns a Supabase client with the user's JWT for RLS
-export function getSupabaseForUser(jwt: string) {
-  return createClient(supabaseUrl, supabaseKey, {
-    global: { headers: { Authorization: `Bearer ${jwt}` } },
-  });
-}
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env
@@ -24,3 +18,10 @@ export const supabaseAdmin = createClient(
   supabaseUrl,
   serviceRoleKey
 );
+
+// Returns a Supabase client with the user's JWT for RLS
+export function getSupabaseForUser(jwt: string) {
+  return createClient(supabaseUrl, supabaseKey, {
+    global: { headers: { Authorization: `Bearer ${jwt}` } },
+  });
+}

@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/apps/web/$1" }
+  ],
+  "buildCommand": "cd apps/web && next build",
+  "outputDirectory": "apps/web/.next"
+}

@@ -3,9 +3,9 @@ import React, { useState, useEffect } from "react";
 import { useUser } from "../../components/context/UserContext";
 import Header from "../../components/layout/Header";
 import Footer from "../../components/layout/Footer";
-import { Modal } from "../../../packages/shared/src/components/ui/Modal";
+import { Modal } from "@shared/components/ui/Modal";
 
-import { ApplicationForm } from "@/components/forms/ApplicationForm";
+import { ApplicationForm } from "../../components/forms/ApplicationForm";
 import { Board } from "../../components/board/Board";
 import type { Application } from "../../types/Application";
 
