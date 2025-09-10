@@ -58,7 +58,7 @@ importers:
         specifier: ^5
         version: 5.9.2
 
-  apps/simple-extension:
+  apps/extension:
     dependencies:
       '@applistash/shared':
         specifier: workspace:*
