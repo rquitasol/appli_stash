@@ -1,0 +1,1 @@
+(()=>{"use strict";console.log("Background script loaded!"),chrome.runtime.onMessage.addListener(function(e,o,s){return console.log("Message received:",e),"AUTH_STATUS"===e.type&&(chrome.storage.local.get(["user"],function(e){s({isLoggedIn:!!e.user,user:e.user||null})}),!0)})})();

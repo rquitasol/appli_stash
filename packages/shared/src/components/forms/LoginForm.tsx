@@ -3,7 +3,19 @@ import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 
-export function LoginForm() {
+interface LoginFormProps {
+  onSubmit?: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  apiEndpoint?: string | null;
+  redirectUrl?: string;
+  isExtension?: boolean;
+}
+
+export function LoginForm({ 
+  onSubmit, 
+  apiEndpoint = '/api/login', 
+  redirectUrl = '/dashboard',
+  isExtension = false
+}: LoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -26,17 +38,33 @@ export function LoginForm() {
     }
     setLoading(true);
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || 'Sign in failed');
+      // Use custom onSubmit handler if provided, otherwise use API endpoint
+      if (onSubmit) {
+        const result = await onSubmit(email, password);
+        if (!result.success) {
+          setError(result.error || 'Login failed');
+        } else if (!isExtension) {
+          // For web app: Redirect after successful login if not an extension
+          // Extensions should handle their own state management after login
+          window.location.href = redirectUrl;
+        }
+      } else if (apiEndpoint) {
+        const res = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || 'Sign in failed');
+        } else {
+          // handle successful login with redirect
+          if (!isExtension) {
+            window.location.href = redirectUrl;
+          }
+        }
       } else {
-        // handle successful login (e.g., redirect)
-        window.location.href = '/dashboard';
+        setError('No login method provided');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
