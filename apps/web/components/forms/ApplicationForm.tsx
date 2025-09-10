@@ -147,7 +147,7 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
       />
         <div className="flex justify-center">
           <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Adding..." : "Add Application"}
+            {isLoading ? "Saving..." : "Save"}
           </Button>
         </div>
     </form>

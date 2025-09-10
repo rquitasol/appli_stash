@@ -16,28 +16,35 @@ AppliStash is a Chrome extension and companion web app that helps you track job 
 
 ```
 appli_stash/
-├── src/
-│   ├── app/
-│   │   ├── api/           # API routes (application, login, register, etc.)
-│   │   ├── dashboard/     # Dashboard pages
-│   │   ├── login/         # Login page
-│   │   ├── register/      # Registration page
-│   │   ├── layout.tsx     # Root layout
-│   │   └── page.tsx       # Home page
-│   ├── components/
-│   │   ├── context/       # User context provider
-│   │   ├── forms/         # Application, Login, Registration forms
-│   │   ├── layout/        # Header, Footer
-│   │   └── ui/            # UI elements (Button, Input, Modal, Alert)
-│   ├── hooks/
-│   ├── lib/               # Utility libraries (encryption, JWT, Supabase)
-│   ├── store/
-│   ├── styles/
-│   └── types/
-├── public/
-├── package.json
-├── tsconfig.json
-├── next.config.ts
+├── apps/
+│   └── web/               # Main Next.js web application
+│       ├── app/
+│       │   ├── api/       # API routes (application, login, register, etc.)
+│       │   ├── dashboard/ # Dashboard pages
+│       │   ├── login/     # Login page
+│       │   ├── register/  # Registration page
+│       │   ├── layout.tsx # Root layout
+│       │   └── page.tsx   # Home page
+│       ├── components/
+│       │   ├── context/   # User context provider
+│       │   ├── forms/     # Application, Login, Registration forms
+│       │   ├── layout/    # Header, Footer
+│       │   └── board/     # Board components
+│       ├── lib/           # Utility libraries (encryption, JWT, Supabase)
+│       ├── types/         # TypeScript type definitions
+│       ├── public/
+│       ├── next.config.ts
+│       └── .env           # Environment variables
+├── packages/
+│   └── shared/            # Shared component library
+│       ├── src/
+│       │   ├── components/
+│       │   │   └── ui/    # Reusable UI components (Button, Input, Modal, Alert)
+│       │   └── index.ts   # Exports for shared components
+├── pnpm-workspace.yaml    # PNPM workspace configuration
+├── package.json           # Root package.json for monorepo
+├── tsconfig.json          # Root TypeScript configuration
+├── vercel.json            # Vercel deployment configuration
 ├── postcss.config.mjs
 ├── eslint.config.mjs
 └── README.md
@@ -46,18 +53,27 @@ appli_stash/
 **Key Features:**
 
 - Next.js 15, React 19, TypeScript, Tailwind CSS
+- Monorepo structure with PNPM workspaces
+- Shared component library for UI consistency
 - Supabase for authentication and data storage
 - Custom API routes for login, registration, and application CRUD
 - User context for authentication state
 - Dashboard with modal form for adding applications
 - Modular, modern UI components
+- Vercel deployment configuration
 
 **Recent changes:**
 
-- Project structure is now monolithic Next.js (no separate extension/web folders)
-- All business logic and UI are in `src/`
-- API routes handle authentication and application management
-- Forms and UI are fully componentized
+- Refactored to a monorepo structure with PNPM workspaces
+- Created a shared component library in `packages/shared`
+- Moved UI components to the shared package for reusability
+- Reorganized application code into `apps/web` directory
+- Added Vercel deployment configuration
+- Enhanced Modal component with improved styling and accessibility
+- Updated form buttons to use "Save" instead of "Add Application"
+- Maintained clear modal titles for different operations
+- Fixed path aliases for proper module resolution
+- Optimized build configuration for monorepo deployment
 
 ## Data Models
 
@@ -135,53 +151,72 @@ appli_stash/
 2. **Install dependencies:**
 
    ```bash
-   # Install web app dependencies
-   cd web
-   npm install
-
-   # Install extension dependencies
-   cd ../extension
-   npm install
+   # Install all dependencies with PNPM (recommended)
+   pnpm install
    ```
 
-3. **Start development servers:**
+3. **Set up environment variables:**
+
+   Create a `.env` file in the `apps/web` directory with the following variables:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   PASSWORD_SECRET=your_password_secret
+   ```
+
+4. **Start development server:**
 
    ```bash
-
-   npm run build:dev
+   # Run the development server
+   pnpm dev
    ```
 
-- **Frontend**: Next.js (React), TypeScript
+5. **Build for production:**
+
+   ```bash
+   # Build the application for production
+   pnpm build
+   ```
+
+## Technology Stack
+
+- **Frontend**: Next.js 15 (React 19), TypeScript
 - **Styling**: Tailwind CSS
+- **Monorepo Management**: PNPM Workspaces
+- **Database/Auth**: Supabase
+- **Deployment**: Vercel
 - **Linting**: ESLint
-- **Extension**: Chrome Extension API v3
-- **Storage**: Chrome Storage API, IndexedDB
 - **Bundler**: Turbopack (Next.js default)
 
-4. **Load Chrome extension:**
+## Deployment
 
-- **Build Tools**: Webpack, Babel
-- **Storage**: Chrome Storage API, IndexedDB
-- [ ] Next.js web dashboard
-- [ ] Basic extension overlay functionality
-- [ ] Application status tracking
-- [ ] Dashboard with kanban board view
-- [ ] Interview scheduling integration
-- [ ] Document management
-- [ ] Analytics and insights
-- [ ] Multi-browser support
-- [ ] Mobile companion app
+The application is configured for deployment on Vercel. The `vercel.json` file in the root directory ensures proper configuration for the monorepo structure.
+
+### Vercel Deployment Steps:
+
+1. Connect your GitHub repository to Vercel
+2. Configure the deployment settings:
+   - Set the "Framework Preset" to Next.js
+   - Set the "Root Directory" to `apps/web`
+   - Add all environment variables from your `.env` file
+3. Deploy your application
 
 ## Roadmap
 
-- [ ] Basic extension overlay functionality
-- [ ] Application status tracking
-- [ ] Dashboard with kanban board view
+- [x] Refactor to monorepo structure
+- [x] Create shared component library
+- [x] Set up Vercel deployment configuration
+- [x] Basic application tracking functionality
+- [x] User authentication with Supabase
+- [ ] Kanban board view for application tracking
 - [ ] Interview scheduling integration
-- [ ] Document management
-- [ ] Analytics and insights
-- [ ] Multi-browser support
-- [ ] Mobile companion app
+- [ ] Document management for resumes and cover letters
+- [ ] Analytics and insights dashboard
+- [ ] Chrome extension for quick application saving
+- [ ] Mobile responsive design
+- [ ] Dark mode support
 
 ## Contributing
 
