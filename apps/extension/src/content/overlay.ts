@@ -1,6 +1,5 @@
-import { JobSite } from "./siteDetection";
-import { extractJobData } from "./sites/dataExtraction";
 import { createOverlayUI } from "./ui";
+import { getJobData } from "./sites/dataExtraction";
 
 export interface User {
   email: string;
@@ -24,11 +23,10 @@ const API_BASE_URL = "http://localhost:3000"; // Change to your actual Next.js a
  * Injects the overlay UI into the job site
  */
 export function injectOverlay(
-  site: JobSite,
   user: User
 ): void {
-  // Extract job data from the page
-  const jobData = extractJobData(site);
+  // Extract job data from the page using our new extraction system
+  const jobData = getJobData();
 
   console.log("AppliStash: Extracted job data:", jobData);
 

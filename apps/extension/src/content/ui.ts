@@ -20,7 +20,7 @@ export function createOverlayUI(
     "0 0 0 4px #6a3cf7, 0 4px 20px rgba(0,0,0,0.4)";
   overlay.style.padding = "16px";
   overlay.style.zIndex = "2147483647"; // Maximum z-index value
-  overlay.style.width = "320px";
+  overlay.style.width = "250px";
   overlay.style.maxWidth = "90vw";
   overlay.style.fontFamily = "Arial, sans-serif";
   overlay.style.fontSize = "14px";
@@ -90,7 +90,7 @@ export function createOverlayUI(
 
   // Add to AppliStash button
   const saveButton = document.createElement("button");
-  saveButton.textContent = "Save to AppliStash";
+  saveButton.textContent = "Save";
   saveButton.style.backgroundColor = "#6a3cf7";
   saveButton.style.color = "white";
   saveButton.style.border = "none";
@@ -104,6 +104,8 @@ export function createOverlayUI(
     saveButton.disabled = true;
     saveButton.textContent = "Saving...";
 
+    console.log("AppliStash: Saving job data", jobData);
+
     // Call the save function
     onSave(jobData);
 
@@ -115,7 +117,7 @@ export function createOverlayUI(
       // Reset after 3 seconds
       setTimeout(() => {
         saveButton.disabled = false;
-        saveButton.textContent = "Save to AppliStash";
+        saveButton.textContent = "Save";
         saveButton.style.backgroundColor = "#6a3cf7";
       }, 3000);
     }, 1000);

@@ -1,4 +1,4 @@
-import { detectSite } from "./siteDetection";
+import { isJobSite } from "./siteDetection";
 import { injectOverlay } from "./overlay";
 
 console.log("AppliStash content script loaded!");
@@ -10,13 +10,9 @@ function handleOverlayInjection() {
     window.location.href
   );
 
-  // Detect which job site we're on
-  const site = detectSite(window.location.href);
-
-  if (site) {
-    console.log(
-      `AppliStash: Detected job site: ${site.name}`
-    );
+  // Check if this is a job site using our new detection method
+  if (isJobSite()) {
+    console.log("AppliStash: Detected job site");
 
     // Get the current user from Chrome storage
     chrome.storage.local.get(["user"], (result) => {
@@ -26,26 +22,11 @@ function handleOverlayInjection() {
           result.user
         );
         // User is logged in, inject the overlay
-        injectOverlay(site, result.user);
+        injectOverlay(result.user);
       } else {
         console.log(
-          "AppliStash: User not found in storage, using test user"
+          "AppliStash: User not logged in, skipping overlay injection"
         );
-        // For testing purposes, create a mock user
-        const testUser = {
-          name: "Test User",
-          email: "test@example.com",
-        };
-
-        // Save the test user to storage for future use
-        chrome.storage.local.set({ user: testUser }, () => {
-          console.log(
-            "AppliStash: Saved test user to storage"
-          );
-        });
-
-        // Inject the overlay with the test user
-        injectOverlay(site, testUser);
       }
     });
   } else {
