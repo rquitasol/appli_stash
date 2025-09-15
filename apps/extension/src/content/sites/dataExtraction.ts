@@ -1,13 +1,13 @@
-import { JobData } from '../overlay';
-import linkedinExtractor from './linkedin';
-import indeedExtractor from './indeed';
-import glassdoorExtractor from './glassdoor';
+import { JobData } from "../overlay";
+import linkedinExtractor from "./linkedin";
+import indeedExtractor from "./indeed";
+import glassdoorExtractor from "./glassdoor";
 
 // Array of all registered extractors
 const extractors = [
   linkedinExtractor,
   indeedExtractor,
-  glassdoorExtractor
+  glassdoorExtractor,
 ];
 
 /**
@@ -21,7 +21,9 @@ export const getJobData = (): JobData | null => {
   // Find the first extractor that can handle this URL
   for (const extractor of extractors) {
     if (extractor.canHandle(url)) {
-      console.log("AppliStash: Found matching extractor for URL");
+      console.log(
+        "AppliStash: Found matching extractor for URL"
+      );
       return extractor.extractJobData();
     }
   }
@@ -35,5 +37,7 @@ export const getJobData = (): JobData | null => {
  */
 export const isJobPage = (): boolean => {
   const url = window.location.href;
-  return extractors.some(extractor => extractor.canHandle(url));
+  return extractors.some((extractor) =>
+    extractor.canHandle(url)
+  );
 };

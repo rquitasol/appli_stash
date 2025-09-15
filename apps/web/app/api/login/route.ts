@@ -60,7 +60,10 @@ export async function POST(request: NextRequest) {
     const access_token = signInData.session.access_token;
     // Set Supabase Auth access_token as HTTP-only cookie
     const response = NextResponse.json(
-      { user },
+      {
+        user,
+        token: access_token, // Include the token in the response body for the extension
+      },
       { status: 200 }
     );
     response.cookies.set("sb-access-token", access_token, {

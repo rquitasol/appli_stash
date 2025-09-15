@@ -2,17 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { LoginForm } from '@applistash/shared';
 import Dashboard from './Dashboard';
 import './Popup.css';
+import { User } from '../content/overlay';
+import { API_BASE_URL } from '../config/api';
 
-// User type for our extension
-type User = {
-  email: string;
-  name: string;
-  token: string;
-};
-
-// Base URL for the Next.js API
-const API_BASE_URL = 'http://localhost:3000'; // Change to your actual Next.js app URL
-
+// API Base URL
+console.log("Popup: Using API base URL:", API_BASE_URL);
 const Popup: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState('');
@@ -38,7 +32,7 @@ const Popup: React.FC = () => {
       const user: User = {
         email: userData.email,
         name: userData.name || userData.email.split('@')[0],
-        token: '', // We don't need to store the token in the extension
+        token: userData.token || '', // Store token if available
       };
       
       // Store the user data in Chrome storage
@@ -90,12 +84,25 @@ const Popup: React.FC = () => {
         return { success: false, error: data.error || 'Login failed' };
       }
       
+      // Extract token from the Authorization header if present
+      let token = '';
+      // Check if the token is in the response headers
+      const authHeader = response.headers.get('Authorization');
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.substring(7); // Remove 'Bearer ' prefix
+      } else if (data.token) {
+        // Alternatively, check if token is in the response body
+        token = data.token;
+      }
+      
       // After successful login, store user data and redirect to dashboard website
       const user: User = {
         email: data.user.email,
         name: data.user.name || email.split('@')[0],
-        token: '',
+        token: token,
       };
+      
+      console.log('Token received:', token ? 'Yes (length: ' + token.length + ')' : 'No');
       
       // Store the user data in Chrome storage
       chrome.storage.local.set({ user }, () => {

@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAccessToken } from "../../../lib/jwtUtils";
 
 export async function GET(request: NextRequest) {
-  const access_token = request.cookies.get(
-    "sb-access-token"
-  )?.value;
+  const access_token = getAccessToken(request);
   if (!access_token) {
     return NextResponse.json(
       { error: "Unauthorized" },
@@ -25,5 +24,10 @@ export async function GET(request: NextRequest) {
   }
   const { id, email, user_metadata } = userData.user;
   const name = user_metadata?.name || null;
-  return NextResponse.json({ id, email, name });
+  return NextResponse.json({
+    id,
+    email,
+    name,
+    token: access_token, // Include token in the response for the extension
+  });
 }
