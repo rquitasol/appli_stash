@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react';
+import React from 'react';
 
 interface AlertProps {
-  children: ReactNode;
+  children: React.ReactNode;
   type?: "success" | "error";
 }
+
 export function Alert({ children, type = "error" }: AlertProps) {
   const color =
     type === "success"
@@ -16,7 +17,7 @@ export function Alert({ children, type = "error" }: AlertProps) {
   );
 }
 
-export function AlertDescription({ children }: { children: ReactNode }) {
+export function AlertDescription({ children }: { children: React.ReactNode }) {
   return <span className="block">{children}</span>;
 }
 

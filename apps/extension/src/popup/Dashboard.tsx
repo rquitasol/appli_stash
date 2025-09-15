@@ -1,18 +1,11 @@
 import React from 'react';
-
-type User = {
-  email: string;
-  name: string;
-  token: string;
-};
+import { User } from '../content/overlay';
+import { API_BASE_URL } from '../config/api';
 
 interface DashboardProps {
   user: User;
   onLogout: () => void;
 }
-
-// Base URL for the Next.js API
-const API_BASE_URL = 'http://localhost:3000'; // Change to your actual Next.js app URL
 
 const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
   const openDashboard = () => {

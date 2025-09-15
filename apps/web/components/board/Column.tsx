@@ -1,6 +1,5 @@
 import React from "react";
-import { ApplicationStatus } from "../../types/ApplicationStatus";
-import type { Application } from "../../types/Application";
+import { Application, ApplicationStatus } from "@shared/types";
 import { ApplicationItem } from "./ApplicationItem";
 
 interface ColumnProps {

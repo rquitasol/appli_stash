@@ -1,5 +1,5 @@
 import React from "react";
-import type { Application } from "../../types/Application";
+import type { Application } from "@shared/types";
 
 interface ApplicationItemProps {
   application: Application;

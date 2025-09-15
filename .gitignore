@@ -12,7 +12,7 @@
 /apps/web/node_modules
 /packages/shared/node_modules
 /apps/extension/node_modules
-/apps/extension/dist
+/apps/extension/dist/
 
 # testing
 /coverage

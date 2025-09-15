@@ -105,8 +105,10 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
                 {title.includes("Application") 
                   ? title.split("Application").map((part, i) => 
                       i === 0 
-                        ? <>{part}<span className="font-bold">Application</span></>
-                        : part
+                        ? <React.Fragment key={`title-part-${i}`}>
+                            {part}<span className="font-bold">Application</span>
+                          </React.Fragment>
+                        : <React.Fragment key={`title-part-${i}`}>{part}</React.Fragment>
                     )
                   : title
                 }

@@ -7,7 +7,7 @@ import { Modal } from "@shared/components/ui/Modal";
 
 import { ApplicationForm } from "../../components/forms/ApplicationForm";
 import { Board } from "../../components/board/Board";
-import type { Application } from "../../types/Application";
+import type { Application } from "@shared/types";
 
 
 

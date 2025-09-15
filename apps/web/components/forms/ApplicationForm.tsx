@@ -5,9 +5,7 @@ import { Input } from "@shared/components/ui/Input";
 import { Select } from "@shared/components/ui/Select";
 import { TextArea } from "@shared/components/ui/TextArea";
 import { Alert, AlertDescription } from "@shared/components/ui/Alert";
-import type { Application } from "../../types/Application";
-import { ApplicationStatus } from "../../types/ApplicationStatus";
-import { ApplicationPriority } from "../../types/ApplicationPriority";
+import { Application, ApplicationStatus, ApplicationPriority } from "@applistash/shared";
 
 
 const defaultForm: Omit<Application, "id" | "user_id"> = {

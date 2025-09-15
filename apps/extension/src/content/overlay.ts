@@ -1,5 +1,10 @@
 import { createOverlayUI } from "./ui";
 import { getJobData } from "./sites/dataExtraction";
+import {
+  ApplicationPriority,
+  ApplicationStatus,
+} from "@applistash/shared";
+import { API_BASE_URL } from "../config/api";
 
 export interface User {
   email: string;
@@ -16,15 +21,10 @@ export interface JobData {
   source: string;
 }
 
-// API Base URL
-const API_BASE_URL = "http://localhost:3000"; // Change to your actual Next.js app URL
-
 /**
  * Injects the overlay UI into the job site
  */
-export function injectOverlay(
-  user: User
-): void {
+export function injectOverlay(user: User): void {
   // Extract job data from the page using our new extraction system
   const jobData = getJobData();
 
@@ -83,23 +83,37 @@ async function saveApplication(
   user: User
 ): Promise<void> {
   try {
+    // Prepare headers with authentication token if available
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    // Add authorization header if token exists
+    if (user.token) {
+      headers["Authorization"] = `Bearer ${user.token}`;
+      console.log(
+        "AppliStash: Adding JWT token to request"
+      );
+    } else {
+      console.warn("AppliStash: No JWT token available");
+    }
+
     const response = await fetch(
       `${API_BASE_URL}/api/application`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({
-          jobTitle: jobData.title,
-          company: jobData.company,
-          location: jobData.location,
-          description: jobData.description,
-          sourceUrl: jobData.url,
-          source: jobData.source,
-          status: "applied",
+          position: jobData.title,
+          company_name: jobData.company,
+          // location: jobData.location,
+          // description: jobData.description,
+          url: jobData.url,
+          // source: jobData.source,
+          status: ApplicationStatus.Saved,
+          priority: ApplicationPriority.Medium,
+          notes: "", // Add empty notes
         }),
-        credentials: "include",
       }
     );
 
