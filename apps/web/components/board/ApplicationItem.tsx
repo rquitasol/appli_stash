@@ -15,9 +15,9 @@ export function ApplicationItem({ application, onClick }: ApplicationItemProps) 
       role="button"
       aria-label={`Edit application for ${application.company_name}`}
     >
-  <div className="font-semibold text-[#581C87]">{application.company_name}</div>
-  <div className="text-sm text-gray-700">{application.position}</div>
-      <div className="text-xs text-gray-400">{application.url}</div>
+      <div className="font-semibold text-[#581C87] break-words">{application.company_name}</div>
+      <div className="text-sm text-gray-700 break-words">{application.position}</div>
+      <div className="text-xs text-gray-400 truncate">{application.url}</div>
     </div>
   );
 }

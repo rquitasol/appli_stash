@@ -10,7 +10,7 @@ interface ColumnProps {
 
 export function Column({ status, items, onItemClick }: ColumnProps) {
   return (
-    <div className="bg-gray-100 rounded-lg shadow p-4 min-w-[250px] flex-1">
+    <div className="bg-gray-100 rounded-lg shadow p-4 mb-4 md:mb-0 md:min-w-[250px] w-full md:flex-1">
       <h3 className="text-lg font-bold mb-4 text-[#581C87]">{status}</h3>
       <div className="space-y-4">
         {items.length === 0 ? (
