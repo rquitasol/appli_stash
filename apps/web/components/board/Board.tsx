@@ -15,7 +15,7 @@ export function Board({ applications, onItemClick }: BoardProps) {
   }));
 
   return (
-    <div className="flex gap-4 w-full overflow-x-auto">
+    <div className="flex flex-col md:flex-row gap-4 w-full md:overflow-x-auto">
       {columns.map((col) => (
         <Column
           key={col.status}

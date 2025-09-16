@@ -9,8 +9,6 @@ import { ApplicationForm } from "../../components/forms/ApplicationForm";
 import { Board } from "../../components/board/Board";
 import type { Application } from "@shared/types";
 
-
-
 export default function DashboardPage() {
   const { user, loading } = useUser();
   const [modalOpen, setModalOpen] = useState(false);
@@ -48,6 +46,26 @@ export default function DashboardPage() {
       .finally(() => setAppLoading(false));
   }, [user]);
 
+  const refreshApplications = () => {
+    setAppLoading(true);
+    fetch("/api/application", { credentials: "include" })
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Failed to fetch applications");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setApplications(data);
+        setAppError("");
+      })
+      .catch((err) => {
+        setAppError(err.message || "Failed to fetch applications");
+      })
+      .finally(() => setAppLoading(false));
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
@@ -57,12 +75,13 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen w-full">
-      <div className="flex-shrink-0" style={{ height: "5%" }}>
+    <div className="flex flex-col min-h-screen w-full">
+      <div className="flex-shrink-0">
         <Header />
       </div>
-      <main className="flex-grow" style={{ height: "90%" }}>
-        <div className="flex justify-end mt-4 mb-4 mr-4">
+      <main className="flex-grow p-4">
+        <div className="flex justify-between items-center mb-6 flex-wrap">
+          <h1 className="text-2xl font-bold text-[#581C87] mb-2 md:mb-0">Applications</h1>
           <button
             className="px-4 py-2 bg-accent text-primary rounded shadow hover:bg-primary hover:text-accent border border-primary"
             onClick={() => setModalOpen(true)}
@@ -70,45 +89,41 @@ export default function DashboardPage() {
             Add Application
           </button>
         </div>
+        
+        {appLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          </div>
+        ) : appError ? (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {appError}
+          </div>
+        ) : (
+          <Board applications={applications} onItemClick={setEditApp} />
+        )}
+        
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add Application">
           <ApplicationForm
             onSuccess={() => {
               setModalOpen(false);
-              // reload applications
-              setAppLoading(true);
-              fetch("/api/application", { credentials: "include" })
-                .then(async (res) => {
-                  if (!res.ok) {
-                    const data = await res.json();
-                    throw new Error(data.error || "Failed to fetch applications");
-                  }
-                  return res.json();
-                })
-                .then((data) => {
-                  setApplications(data);
-                  setAppError("");
-                })
-                .catch((err) => {
-                  setAppError(err.message || "Failed to fetch applications");
-                })
-                .finally(() => setAppLoading(false));
+              refreshApplications();
             }}
           />
         </Modal>
+        
         <Modal isOpen={!!editApp} onClose={() => setEditApp(null)} title="Edit Application">
-          {editApp && <ApplicationForm initial={editApp} />}
-        </Modal>
-        <div className="mt-8">
-          {appLoading ? (
-            <div className="text-center text-gray-500">Loading applications...</div>
-          ) : appError ? (
-            <div className="text-center text-red-500">{appError}</div>
-          ) : (
-            <Board applications={applications} onItemClick={setEditApp} />
+          {editApp && (
+            <ApplicationForm 
+              initial={editApp} 
+              onSuccess={() => {
+                setEditApp(null);
+                refreshApplications();
+              }}
+            />
           )}
-        </div>
+        </Modal>
       </main>
-      <div className="flex-shrink-0" style={{ height: "5%" }}>
+      <div className="flex-shrink-0 mt-auto">
         <Footer />
       </div>
     </div>
