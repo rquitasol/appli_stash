@@ -75,16 +75,17 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full">
+    <div className="flex flex-col min-h-screen w-full bg-white">
       <div className="flex-shrink-0">
         <Header />
       </div>
-      <main className="flex-grow p-4">
+      <main className="flex-grow p-4 bg-white">
         <div className="flex justify-between items-center mb-6 flex-wrap">
           <h1 className="text-2xl font-bold text-[#581C87] mb-2 md:mb-0">Applications</h1>
           <button
             className="px-4 py-2 bg-accent text-primary rounded shadow hover:bg-primary hover:text-accent border border-primary"
             onClick={() => setModalOpen(true)}
+            data-add-application
           >
             Add Application
           </button>

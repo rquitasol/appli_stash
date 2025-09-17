@@ -143,8 +143,8 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
         onChange={handleChange}
         rows={3}
       />
-        <div className="flex justify-center">
-          <Button type="submit" disabled={isLoading}>
+        <div className="flex justify-center mt-4">
+          <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? "Saving..." : "Save"}
           </Button>
         </div>
