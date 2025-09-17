@@ -6,14 +6,21 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 export function TextArea({ label, className = "", ...props }: TextAreaProps) {
+  // Extract value from props to handle null values
+  const { value, ...restProps } = props;
+  
+  // Convert null value to empty string
+  const safeValue = value === null ? "" : value;
+  
   return (
     <div className="mb-4 border-[#8B5CF6] text-[#8B5CF6]">
-      <label htmlFor={props.id} className="block text-sm font-medium text-gray-700 mb-1">
+      <label htmlFor={restProps.id} className="block text-sm font-medium text-gray-700 mb-1">
         {label}
       </label>
       <textarea
         className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300 ${className}`}
-        {...props}
+        value={safeValue}
+        {...restProps}
       />
     </div>
   );

@@ -15,12 +15,13 @@ export function Board({ applications, onItemClick }: BoardProps) {
   }));
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 w-full md:overflow-x-auto">
+    <div className="flex flex-col md:flex-row gap-8 w-full md:overflow-x-auto pb-6">
       {columns.map((col) => (
         <Column
           key={col.status}
           status={col.status}
           items={col.items}
+          itemCount={col.items.length}
           {...(onItemClick ? { onItemClick } : {})}
         />
       ))}

@@ -11,10 +11,11 @@
 	--foreground: #171717;
 }
 
+/* Override dark mode - always use light mode */
 @media (prefers-color-scheme: dark) {
 	@theme {
-		--background: #0a0a0a;
-		--foreground: #ededed;
+		--background: #ffffff;
+		--foreground: #171717;
 	}
 }
 
