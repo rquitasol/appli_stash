@@ -30,7 +30,7 @@ export function ApplicationItem({ application, onClick, index }: ApplicationItem
     
     return (
       <div 
-        className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
+        className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-sm"
         style={{ backgroundColor: getBorderColor() }}
       >
         {firstLetter}

@@ -6,7 +6,7 @@ import { Droppable } from "@hello-pangea/dnd";
 const statusColors: Record<string, string> = {
   Saved: '#7C3AED',
   Applied: '#FACC15',
-  Interview: '#6989ecff',
+  Interview: '#476EE1',
   Offer: '#10B981',
   Rejected: '#EF4444',
 };

@@ -14,11 +14,11 @@ export function TextArea({ label, className = "", ...props }: TextAreaProps) {
   
   return (
     <div className="mb-4 border-[#8B5CF6] text-[#8B5CF6]">
-      <label htmlFor={restProps.id} className="block text-sm font-medium text-black mb-1">
+      <label htmlFor={restProps.id} className="block text-base font-semibold text-black mb-1">
         {label}
       </label>
       <textarea
-        className={`mt-1 block w-full px-2 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300 ${className}`}
+      className={`mt-1 block w-full px-2 py-2 border border-gray-300 text-sm rounded focus:outline-none focus:ring focus:border-blue-300 ${className}`}
         value={safeValue}
         {...restProps}
       />
