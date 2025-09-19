@@ -90,9 +90,11 @@ export function LoginForm({
         placeholder="Password"
       />
       {error && <div className="error">{error}</div>}
-      <Button type="submit" disabled={loading}>
-        {loading ? 'Loading...' : 'Login'}
-      </Button>
+      <div className="flex justify-center">
+        <Button type="submit" disabled={loading}>
+          {loading ? 'Loading...' : 'Login'}
+        </Button>
+      </div>
     </form>
   );
 }
