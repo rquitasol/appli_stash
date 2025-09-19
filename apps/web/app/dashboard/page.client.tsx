@@ -100,7 +100,10 @@ export default function DashboardPage() {
             {appError}
           </div>
         ) : (
-          <Board applications={applications} onItemClick={setEditApp} />
+          <Board 
+            applications={applications} 
+            onItemClick={setEditApp} 
+          />
         )}
         
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add Application">
