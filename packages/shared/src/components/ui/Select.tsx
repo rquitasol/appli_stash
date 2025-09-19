@@ -16,7 +16,7 @@ export function Select({ label, className = "", children, value, ...props }: Sel
         {label}
       </label>
       <select
-        className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300 ${className}`}
+        className={`mt-1 block w-full px-2 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-300 ${className}`}
         value={safeValue}
         {...props}
       >

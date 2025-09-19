@@ -1,6 +1,7 @@
 import React from "react";
 import type { Application } from "@shared/types";
 import { Draggable } from "@hello-pangea/dnd";
+import { get } from "http";
 
 interface ApplicationItemProps {
   application: Application;
@@ -9,6 +10,19 @@ interface ApplicationItemProps {
 }
 
 export function ApplicationItem({ application, onClick, index }: ApplicationItemProps) {
+
+  
+  // Determine border color based on application priority
+  const getBorderColor = () => {
+    const priorityColors: Record<string, string> = {
+      'Low': '#F59E0B', // amber for Low priority
+      'Medium': '#10B981', // emerald green for Medium priority
+      'High': '#EF4444', // red for High priority
+    };
+
+    return priorityColors[application.priority_level] || '#F59E0B';
+  };
+
   // Function to get company logo or display first letter in a circle
   const getCompanyDisplay = () => {
     // For this example, we'll use the first letter of company name
@@ -17,24 +31,11 @@ export function ApplicationItem({ application, onClick, index }: ApplicationItem
     return (
       <div 
         className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg"
-        style={{ backgroundColor: '#E0E0E0' }}
+        style={{ backgroundColor: getBorderColor() }}
       >
         {firstLetter}
       </div>
     );
-  };
-  
-  // Determine border color based on application status
-  const getBorderColor = () => {
-    const statusColors: Record<string, string> = {
-      'Saved': '#7C3AED', // purple for Saved
-      'Applied': '#FACC15', // yellow for Applied
-      'Interview': '#8B5CF6', // violet for Interview
-      'Offer': '#10B981', // green for Offer
-      'Rejected': '#EF4444', // red for Rejected
-    };
-
-    return statusColors[application.status] || '#7C3AED';
   };
   
   return (
@@ -72,8 +73,8 @@ export function ApplicationItem({ application, onClick, index }: ApplicationItem
             <div className="flex items-center gap-2 mb-1">
               {getCompanyDisplay()}
               <div className="flex-1 ml-1">
-                <div className="text-secondary text-lg font-semibold">{application.position}</div>
-                <div className="text-gray-500 text-base">{application.company_name}</div>
+                <div className="text-secondary text-base font-semibold">{application.position}</div>
+                <div className="text-gray-500 text-sm">{application.company_name}</div>
               </div>
               <div className="text-secondary text-sm whitespace-nowrap">
                 1mo

@@ -65,7 +65,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50" 
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 p-4" 
       style={{
         position: 'fixed',
         top: 0,
@@ -81,17 +81,17 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       ref={modalRef}
     >
       <div 
-        className="bg-white rounded-lg shadow-2xl w-auto max-w-md mx-auto relative overflow-hidden p-0"
+        className="bg-white rounded-lg shadow-2xl w-auto max-w-md mx-auto relative overflow-hidden flex flex-col"
         style={{
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
           zIndex: 10000,
           borderRadius: '8px',
-          margin: '24px'
+          maxHeight: '90vh'
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div 
-          className="relative w-full"
+          className="relative w-full flex-shrink-0"
           style={{ 
             backgroundColor: '#8B5CF6', 
             borderTopLeftRadius: '8px',
@@ -100,7 +100,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
           }}
         >
           {title && (
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pl-2">
               <h2 className="text-3xl font-bold text-white ml-4 ">
                 {title.includes("Application") 
                   ? title.split("Application").map((part, i) => 
@@ -124,7 +124,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             </div>
           )}
         </div>
-        <div className="p-8">
+        <div className="p-4 overflow-y-auto flex-1">
           {children}
         </div>
       </div>
