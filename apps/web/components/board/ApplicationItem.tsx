@@ -1,12 +1,14 @@
 import React from "react";
 import type { Application } from "@shared/types";
+import { Draggable } from "@hello-pangea/dnd";
 
 interface ApplicationItemProps {
   application: Application;
   onClick?: ((application: Application) => void) | undefined;
+  index: number;
 }
 
-export function ApplicationItem({ application, onClick }: ApplicationItemProps) {
+export function ApplicationItem({ application, onClick, index }: ApplicationItemProps) {
   // Function to get company logo or display first letter in a circle
   const getCompanyDisplay = () => {
     // For this example, we'll use the first letter of company name
@@ -36,38 +38,50 @@ export function ApplicationItem({ application, onClick }: ApplicationItemProps) 
   };
   
   return (
-    <div
-      className="bg-white rounded-lg p-3 border border-gray-200 cursor-pointer transition-all duration-200"
-      style={{ 
-        boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.05)',
-        borderLeftWidth: '4px',
-        borderLeftColor: getBorderColor()
-      }}
-      onClick={() => onClick && onClick(application)}
-      tabIndex={0}
-      role="button"
-      aria-label={`Edit application for ${application.company_name}`}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = '0px 4px 12px rgba(0, 0, 0, 0.1)';
-        e.currentTarget.style.transform = 'translateY(-1px)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = '0px 2px 6px rgba(0, 0, 0, 0.05)';
-        e.currentTarget.style.transform = 'translateY(0px)';
-      }}
+    <Draggable 
+      draggableId={application.id ? String(application.id) : `temp-${application.company_name}`} 
+      index={index}
     >
-      <div className="flex flex-col">
-        <div className="flex items-center gap-2 mb-1">
-          {getCompanyDisplay()}
-          <div className="flex-1 ml-1">
-            <div className="text-secondary text-lg font-semibold">{application.position}</div>
-            <div className="text-gray-500 text-base">{application.company_name}</div>
-          </div>
-          <div className="text-secondary text-sm whitespace-nowrap">
-            1mo
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          className={`bg-white rounded-lg p-3 border border-gray-200 cursor-pointer transition-all duration-200 ${
+            snapshot.isDragging ? 'shadow-lg ring-2 ring-primary ring-opacity-50' : ''
+          }`}
+          style={{ 
+            ...provided.draggableProps.style,
+            boxShadow: snapshot.isDragging 
+              ? '0px 8px 16px rgba(0, 0, 0, 0.1)' 
+              : '0px 2px 6px rgba(0, 0, 0, 0.05)',
+            borderLeftWidth: '4px',
+            borderLeftColor: getBorderColor()
+          }}
+          onClick={(e) => {
+            if (!snapshot.isDragging && onClick) {
+              e.stopPropagation();
+              onClick(application);
+            }
+          }}
+          tabIndex={0}
+          role="button"
+          aria-label={`Edit application for ${application.company_name}`}
+        >
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2 mb-1">
+              {getCompanyDisplay()}
+              <div className="flex-1 ml-1">
+                <div className="text-secondary text-lg font-semibold">{application.position}</div>
+                <div className="text-gray-500 text-base">{application.company_name}</div>
+              </div>
+              <div className="text-secondary text-sm whitespace-nowrap">
+                1mo
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      )}
+    </Draggable>
   );
 }

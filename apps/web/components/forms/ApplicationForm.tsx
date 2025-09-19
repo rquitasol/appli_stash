@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@shared/components/ui/Button";
 import { Input } from "@shared/components/ui/Input";
 import { Select } from "@shared/components/ui/Select";
@@ -31,6 +31,20 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Check for column-specific status on mount
+  useEffect(() => {
+    const columnStatus = localStorage.getItem('newApplicationStatus');
+    if (columnStatus && !initial) {
+      console.log('Setting status from localStorage:', columnStatus);
+      setForm(prev => ({
+        ...prev,
+        status: columnStatus as ApplicationStatus
+      }));
+      // Clear localStorage after using it
+      localStorage.removeItem('newApplicationStatus');
+    }
+  }, [initial]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     const { name, value } = e.target;

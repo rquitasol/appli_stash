@@ -1,6 +1,7 @@
 import React from "react";
 import { Application, ApplicationStatus } from "@shared/types";
 import { ApplicationItem } from "./ApplicationItem";
+import { Droppable } from "@hello-pangea/dnd";
 
 interface ColumnProps {
   status: ApplicationStatus;
@@ -37,32 +38,51 @@ export function Column({ status, items, itemCount = 0, onItemClick }: ColumnProp
         </div>
         <span className="text-secondary text-sm">{itemCount} JOBS</span>
       </div>
-      <div className="space-y-5 mt-6">
-        {/* Add button for adding new applications */}
-        <div className="flex justify-center">
-          <button 
-            className="w-full border border-secondary rounded-lg py-3 flex justify-center items-center text-secondary hover:bg-gray-50 transition-colors"
-            onClick={(e) => {
-              e.stopPropagation();
-              // We'll trigger the same add application modal that's used elsewhere
-              const addButton = document.querySelector('button[data-add-application]');
-              if (addButton instanceof HTMLElement) {
-                addButton.click();
-              }
-            }}
-          >
-            <span className="text-2xl">+</span>
-          </button>
-        </div>
-        
-        {items.length === 0 ? (
-          <div className="text-secondary text-sm text-center mt-4">No applications</div>
-        ) : (
-          items.map((app) => (
-            <ApplicationItem key={app.id || app.company_name} application={app} onClick={onItemClick} />
-          ))
-        )}
+      
+      {/* Add button for adding new applications */}
+      <div className="flex justify-center mb-5">
+        <button 
+          className="w-full border border-secondary rounded-lg py-3 flex justify-center items-center text-secondary hover:bg-gray-50 transition-colors"
+          onClick={(e) => {
+            e.stopPropagation();
+            // Store the status in localStorage to be picked up by the form
+            localStorage.setItem('newApplicationStatus', status);
+            // Trigger the same add application modal that's used elsewhere
+            const addButton = document.querySelector('button[data-add-application]');
+            if (addButton instanceof HTMLElement) {
+              addButton.click();
+            }
+          }}
+        >
+          <span className="text-2xl">+</span>
+        </button>
       </div>
+      
+      <Droppable droppableId={status}>
+        {(provided, snapshot) => (
+          <div 
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={`space-y-5 min-h-[100px] transition-colors ${
+              snapshot.isDraggingOver ? 'bg-gray-50 rounded-lg p-2' : ''
+            }`}
+          >
+            {items.length === 0 ? (
+              <div className="text-secondary text-sm text-center mt-4">No applications</div>
+            ) : (
+              items.map((app, index) => (
+                <ApplicationItem 
+                  key={app.id || app.company_name} 
+                  application={app} 
+                  onClick={onItemClick}
+                  index={index}
+                />
+              ))
+            )}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
     </div>
   );
 }
