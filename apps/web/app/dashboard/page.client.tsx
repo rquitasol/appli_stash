@@ -6,12 +6,14 @@ import Footer from "../../components/layout/Footer";
 import { Modal } from "@shared/components/ui/Modal";
 
 import { ApplicationForm } from "../../components/forms/ApplicationForm";
+import { ContactForm } from "../../components/forms/ContactForm";
 import { Board } from "../../components/board/Board";
 import type { Application } from "@shared/types";
 
 export default function DashboardPage() {
   const { user, loading } = useUser();
   const [modalOpen, setModalOpen] = useState(false);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
   const [editApp, setEditApp] = useState<Application | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
   const [appLoading, setAppLoading] = useState(true);
@@ -82,13 +84,21 @@ export default function DashboardPage() {
       <main className="flex-grow p-4 bg-white">
         <div className="flex justify-between items-center mb-6 flex-wrap">
           <h1 className="text-2xl font-bold text-[#581C87] mb-2 md:mb-0">Applications</h1>
-          <button
-            className="px-4 py-2 bg-primary text-accent rounded shadow hover:bg-secondary hover:text-accent border border-primary"
-            onClick={() => setModalOpen(true)}
-            data-add-application
-          >
-            Add Application
-          </button>
+          <div className="flex gap-2 flex-wrap">
+            <button
+              className="px-4 py-2 bg-primary text-accent rounded shadow hover:bg-secondary hover:text-accent border border-primary"
+              onClick={() => setModalOpen(true)}
+              data-add-application
+            >
+              Add Application
+            </button>
+            <button
+              className="px-4 py-2 bg-[#10B981] text-white rounded shadow hover:bg-[#059669] border border-[#10B981]"
+              onClick={() => setContactModalOpen(true)}
+            >
+              Add Contact
+            </button>
+          </div>
         </div>
         
         {appLoading ? (
@@ -111,6 +121,14 @@ export default function DashboardPage() {
             onSuccess={() => {
               setModalOpen(false);
               refreshApplications();
+            }}
+          />
+        </Modal>
+        
+        <Modal isOpen={contactModalOpen} onClose={() => setContactModalOpen(false)} title="Add Contact">
+          <ContactForm
+            onSuccess={() => {
+              setContactModalOpen(false);
             }}
           />
         </Modal>
