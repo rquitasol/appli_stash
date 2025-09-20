@@ -104,6 +104,7 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
           value={form.company_name}
           onChange={handleChange}
           required
+          placeholder="e.g. Google, Microsoft, Apple"
         />
       </div>
       <div className="space-y-2">
@@ -113,6 +114,7 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
           value={form.url}
           onChange={handleChange}
           required
+          placeholder="https://company.com/careers/job-posting"
         />
       </div>
       <Select
@@ -134,6 +136,7 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
           value={form.position}
           onChange={handleChange}
           required
+          placeholder="e.g. Software Engineer, Product Manager"
         />
       </div>
       <div className="space-y-2">
@@ -156,6 +159,7 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
         value={form.notes}
         onChange={handleChange}
         rows={3}
+        placeholder="Additional notes about this application, interview details, contacts, etc..."
       />
         <div className="flex justify-center mt-4">
           <Button type="submit" disabled={isLoading} className="w-full">
