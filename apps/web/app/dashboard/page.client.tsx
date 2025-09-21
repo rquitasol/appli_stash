@@ -7,6 +7,7 @@ import { Modal } from "@shared/components/ui/Modal";
 
 import { ApplicationForm } from "../../components/forms/ApplicationForm";
 import { ContactForm } from "../../components/forms/ContactForm";
+import { InterviewForm } from "../../components/forms/InterviewForm";
 import { Board } from "../../components/board/Board";
 import type { Application } from "@shared/types";
 
@@ -14,6 +15,7 @@ export default function DashboardPage() {
   const { user, loading } = useUser();
   const [modalOpen, setModalOpen] = useState(false);
   const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [interviewModalOpen, setInterviewModalOpen] = useState(false);
   const [editApp, setEditApp] = useState<Application | null>(null);
   const [applications, setApplications] = useState<Application[]>([]);
   const [appLoading, setAppLoading] = useState(true);
@@ -98,6 +100,12 @@ export default function DashboardPage() {
             >
               Add Contact
             </button>
+            <button
+              className="px-4 py-2 bg-[#3B82F6] text-white rounded shadow hover:bg-[#2563EB] border border-[#3B82F6]"
+              onClick={() => setInterviewModalOpen(true)}
+            >
+              Add Interview
+            </button>
           </div>
         </div>
         
@@ -129,6 +137,14 @@ export default function DashboardPage() {
           <ContactForm
             onSuccess={() => {
               setContactModalOpen(false);
+            }}
+          />
+        </Modal>
+        
+        <Modal isOpen={interviewModalOpen} onClose={() => setInterviewModalOpen(false)} title="Add Interview">
+          <InterviewForm
+            onSuccess={() => {
+              setInterviewModalOpen(false);
             }}
           />
         </Modal>
