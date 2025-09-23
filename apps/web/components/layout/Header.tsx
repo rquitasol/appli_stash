@@ -38,24 +38,7 @@ export default function Header() {
         </Link>
       </div>
       
-      {/* Navigation Links */}
-      {!loading && user && (
-        <nav className="hidden md:flex items-center gap-6">
-          {navigationLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-sm font-medium transition-colors hover:text-secondary ${
-                pathname === link.href
-                  ? "text-secondary border-b-2 border-secondary pb-1"
-                  : "text-accent"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-      )}
+      
 
       <nav className="flex items-center gap-2 md:gap-4 text-accent">
         {!loading && user && (
