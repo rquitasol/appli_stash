@@ -1,7 +1,6 @@
 import React from "react";
 import type { Application } from "@shared/types";
 import { Draggable } from "@hello-pangea/dnd";
-import { get } from "http";
 
 interface ApplicationItemProps {
   application: Application;

@@ -6,6 +6,7 @@ import Footer from "../../components/layout/Footer";
 import { Modal } from "@shared/components/ui/Modal";
 import { ContactForm } from "../../components/forms/ContactForm";
 import { ContactItem, Contact } from "../../components/contacts/ContactItem";
+import { Sidebar } from "../../components/layout/Sidebar";
 
 export default function ContactsPage() {
   const { user, loading } = useUser();
@@ -14,6 +15,7 @@ export default function ContactsPage() {
   const [contactError, setContactError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [editContact, setEditContact] = useState<Contact | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -85,12 +87,24 @@ export default function ContactsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-gray-50">
-      <div className="flex-shrink-0">
-        <Header />
-      </div>
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar 
+        isCollapsed={sidebarCollapsed} 
+        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+      />
       
-      <main className="flex-grow p-4">
+      {/* Main Content */}
+      <div className={`flex flex-col flex-1 transition-all duration-300 ${
+        sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-64'
+      }`}>
+        {/* Header */}
+        <div className="flex-shrink-0">
+          <Header />
+        </div>
+        
+        {/* Main Content Area */}
+        <main className="flex-grow p-4 overflow-auto">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
           <div className="flex justify-between items-center mb-6 flex-wrap">
@@ -266,10 +280,12 @@ export default function ContactsPage() {
             </div>
           )}
         </Modal>
-      </main>
-      
-      <div className="flex-shrink-0 mt-auto">
-        <Footer />
+        </main>
+        
+        {/* Footer */}
+        <div className="flex-shrink-0 mt-auto">
+          <Footer />
+        </div>
       </div>
     </div>
   );
