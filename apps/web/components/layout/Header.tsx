@@ -4,11 +4,9 @@ import React from "react";
 import { useUser } from "../context/UserContext";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function Header() {
   const { user, loading } = useUser();
-  const pathname = usePathname();
 
   function handleSignOut() {
     fetch("/api/signout", { method: "POST" })
@@ -16,11 +14,6 @@ export default function Header() {
         window.location.href = "/";
       });
   }
-
-  const navigationLinks = [
-    { href: "/dashboard", label: "Dashboard" },
-    { href: "/contacts", label: "Contacts" },
-  ];
 
   return (
     <header className="w-full h-full bg-primary text-accent flex items-center justify-between px-4 py-3 shadow-md">
