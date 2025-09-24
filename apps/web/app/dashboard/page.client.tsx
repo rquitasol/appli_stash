@@ -82,12 +82,6 @@ export default function DashboardPage() {
             >
               Add Application
             </button>
-            <button
-              className="px-4 py-2 bg-[#3B82F6] text-white rounded shadow hover:bg-[#2563EB] border border-[#3B82F6]"
-              onClick={() => setInterviewModalOpen(true)}
-            >
-              Add Interview
-            </button>
           </div>
         </div>
         
