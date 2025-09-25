@@ -2,14 +2,17 @@
 
 > Your secret stash for job applications - track, organize, and conquer your job hunt!
 
-AppliStash is a Chrome extension and companion web app that helps you track job applications directly from the websites where you apply. It overlays custom buttons on job listings or application pages, letting you save, organize, and review your progress in one place.
+AppliStash is a Chrome extension and companion web app that helps you track job applications, interviews, and contacts directly from the websites where you apply. It features a modern dashboard with both normal and calendar views, making it easy to manage your entire job search process.
 
 ## Features
 
 - **One-Click Save**: Chrome extension injects an overlay on job sites
-- **Smart Tracking**: Track application status from saved to offer
-- **Dashboard Insights**: Comprehensive web dashboard for management
+- **Smart Tracking**: Track application status from saved to offer with drag-and-drop Kanban board
+- **Interview Management**: Schedule and track interviews with both list and calendar views
+- **Contact Management**: Keep track of recruiters and hiring managers
+- **Dashboard Insights**: Comprehensive web dashboard with modern UI
 - **Seamless Integration**: Works directly on job sites you already use
+- **Collapsible Sidebar**: Clean navigation that expands on hover
 - **Built with React**: Modern, responsive UI for both extension and web app
 
 ## Project Structure
@@ -17,29 +20,42 @@ AppliStash is a Chrome extension and companion web app that helps you track job 
 ```
 appli_stash/
 ├── apps/
-│   └── web/               # Main Next.js web application
-│       ├── app/
-│       │   ├── api/       # API routes (application, login, register, etc.)
-│       │   ├── dashboard/ # Dashboard pages
-│       │   ├── login/     # Login page
-│       │   ├── register/  # Registration page
-│       │   ├── layout.tsx # Root layout
-│       │   └── page.tsx   # Home page
-│       ├── components/
-│       │   ├── context/   # User context provider
-│       │   ├── forms/     # Application, Login, Registration forms
-│       │   ├── layout/    # Header, Footer
-│       │   └── board/     # Board components
-│       ├── lib/           # Utility libraries (encryption, JWT, Supabase)
-│       ├── types/         # TypeScript type definitions
-│       ├── public/
-│       ├── next.config.ts
-│       └── .env           # Environment variables
+│   ├── web/               # Main Next.js web application
+│   │   ├── app/
+│   │   │   ├── api/       # API routes (application, contact, interview, auth)
+│   │   │   ├── dashboard/ # Dashboard with Kanban board
+│   │   │   ├── contacts/  # Contact management page
+│   │   │   ├── interviews/# Interview management with calendar view
+│   │   │   ├── login/     # Login page
+│   │   │   ├── register/  # Registration page
+│   │   │   ├── layout.tsx # Root layout
+│   │   │   └── page.tsx   # Home page
+│   │   ├── components/
+│   │   │   ├── context/   # User context provider
+│   │   │   ├── forms/     # Application, Contact, Interview forms
+│   │   │   ├── layout/    # Header, Footer, Sidebar, MainLayout
+│   │   │   ├── board/     # Kanban board and item components
+│   │   │   ├── calendar/  # Calendar view for interviews
+│   │   │   └── ui/        # UI components
+│   │   ├── lib/           # Utility libraries (encryption, JWT, Supabase)
+│   │   ├── types/         # TypeScript type definitions
+│   │   ├── public/
+│   │   ├── next.config.ts
+│   │   └── .env           # Environment variables
+│   └── extension/         # Chrome extension
+│       ├── src/
+│       │   ├── config/    # API configuration
+│       │   ├── popup/     # Extension popup interface
+│       │   └── background/# Background scripts
+│       ├── dist/          # Built extension files
+│       ├── manifest.json  # Chrome extension manifest
+│       └── package.json   # Extension dependencies
 ├── packages/
 │   └── shared/            # Shared component library
 │       ├── src/
 │       │   ├── components/
 │       │   │   └── ui/    # Reusable UI components (Button, Input, Modal, Alert)
+│       │   ├── types/     # Shared TypeScript types
 │       │   └── index.ts   # Exports for shared components
 ├── pnpm-workspace.yaml    # PNPM workspace configuration
 ├── package.json           # Root package.json for monorepo
@@ -56,90 +72,24 @@ appli_stash/
 - Monorepo structure with PNPM workspaces
 - Shared component library for UI consistency
 - Supabase for authentication and data storage
-- Custom API routes for login, registration, and application CRUD
-- User context for authentication state
-- Dashboard with modal form for adding applications
-- Modular, modern UI components
+- Custom API routes for CRUD operations on applications, contacts, and interviews
+- User context for authentication state management
+- Dashboard with drag-and-drop Kanban board for application tracking
+- Interview management with both normal list view and calendar view
+- Contact management for tracking recruiters and hiring managers
+- Collapsible sidebar navigation with hover functionality
+- Chrome extension for capturing job applications from websites
+- Modular, modern UI components with consistent design system
 - Vercel deployment configuration
 
-**Recent changes:**
-
-- Refactored to a monorepo structure with PNPM workspaces
-- Created a shared component library in `packages/shared`
-- Moved UI components to the shared package for reusability
-- Reorganized application code into `apps/web` directory
-- Added Vercel deployment configuration
-- Enhanced Modal component with improved styling and accessibility
-- Updated form buttons to use "Save" instead of "Add Application"
-- Maintained clear modal titles for different operations
-- Fixed path aliases for proper module resolution
-- Optimized build configuration for monorepo deployment
-
-## Data Models
-
-### Application Object
-
-- **Name** - Company Name
-- **Position** - Job title/role
-- **Application Date** - When you applied
-
-  - `Saved`
-  - `Applied`
-  - `Phone Screen`
-  - `Interview`
-  - `Offer`
-  - `Rejected`
-  - `Withdrawn`
-
-- **Job URL** - Link to original posting
-- **Salary Range** - Expected compensation
-- **Location** - Job location (Remote/City/State)
-- **Application Method** - How you applied (LinkedIn, Company Site, Referral, etc.)
-- **Priority Level** - High, Medium, Low
-- **Notes** - Personal notes and observations
-- **Next Action** - Follow-up date/action needed
-- **Contact Person** - Recruiter or hiring manager
-- **Application Deadline** - When applications close
-
-### Contact Object
-
-- **Name** - Contact's full name
-- **Title** - Job title/role
-- **Email** - Contact email
-- **Phone** - Phone number
-- **Company** - Company name
-- **LinkedIn Profile** - LinkedIn URL
-- **Notes** - Interaction history
-- **Relationship** - Connection to application
-
-### Interview Object
-
-- **Application ID** - Links to specific application
-- **Interview Type** - Phone, Video, In-person, Technical
-- **Date/Time** - Scheduled time
-- **Interviewer Name(s)** - Who you're meeting with
-- **Status** - Scheduled, Completed, Cancelled
-- **Notes** - Interview notes and feedback
-- **Follow-up Required** - Next steps needed
-
-### Document Object
-
-- **Application ID** - Links to specific application
-- **Document Type** - Resume, Cover Letter, Portfolio
-- **File Name/Path** - Document location
-- **Version** - Document version number
-- **Date Modified** - Last updated
-
-### Company Object
-
-- **Company Name** - Organization name
-- **Industry** - Business sector
-- **Size** - Company size (employees)
-- **Website** - Company website
-- **Notes** - Company research notes
-- **Rating** - Personal rating or Glassdoor score
-
 ## Installation (Development)
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- pnpm (recommended) or npm
+
+### Web Application Setup
 
 1. **Clone the repository:**
 
@@ -169,16 +119,47 @@ appli_stash/
 4. **Start development server:**
 
    ```bash
-   # Run the development server
+   # Run the web application development server
    pnpm dev
    ```
 
 5. **Build for production:**
 
    ```bash
-   # Build the application for production
+   # Build the web application for production
    pnpm build
    ```
+
+### Chrome Extension Setup
+
+1. **Build the extension:**
+
+   ```bash
+   # Navigate to the extension directory
+   cd apps/extension
+
+   # Install dependencies (if not already installed from root)
+   pnpm install
+
+   # Build the extension
+   pnpm dev
+   ```
+
+   This will compile the extension to the `apps/extension/dist` folder.
+
+2. **Load in Chrome:**
+
+   - Open Chrome and navigate to `chrome://extensions`
+   - Enable "Developer mode" (toggle in the top-right corner)
+   - Click "Load unpacked" and select the `apps/extension/dist` directory
+   - The AppliStash extension should now appear in your browser toolbar
+
+3. **Extension Features:**
+
+   - Basic login functionality integrated with the web app
+   - Lightweight popup interface
+   - Direct integration with Chrome APIs
+   - Configurable API endpoints (local development vs production)
 
 ## Technology Stack
 
@@ -210,25 +191,19 @@ The application is configured for deployment on Vercel. The `vercel.json` file i
 - [x] Set up Vercel deployment configuration
 - [x] Basic application tracking functionality
 - [x] User authentication with Supabase
-- [ ] Kanban board view for application tracking
-- [ ] Interview scheduling integration
+- [x] Kanban board view for application tracking
+- [x] Interview scheduling and management
+- [x] Calendar view for interviews
+- [x] Contact management system
+- [x] Collapsible sidebar navigation
+- [x] Chrome extension basic structure
+- [ ] Chrome extension integration with job sites
 - [ ] Document management for resumes and cover letters
 - [ ] Analytics and insights dashboard
-- [ ] Chrome extension for quick application saving
-- [ ] Mobile responsive design
+- [ ] Email integration and reminders
+- [ ] Mobile responsive design improvements
 - [ ] Dark mode support
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- [ ] Advanced filtering and search
 
 ## Inspiration
 
