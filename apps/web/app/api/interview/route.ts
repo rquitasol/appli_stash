@@ -118,6 +118,7 @@ export async function GET(request: NextRequest) {
   // If userId is provided as a query param, fetch all interviews for that user (admin/API use)
   const { searchParams } = new URL(request.url);
   const userIdParam = searchParams.get("userId");
+  const searchQuery = searchParams.get("search");
 
   if (userIdParam) {
     // Only allow this for authorized/admin users in production!
@@ -134,10 +135,22 @@ export async function GET(request: NextRequest) {
     }
 
     const supabaseUser = getSupabaseForUser(access_token);
-    const { data, error } = await supabaseUser
+
+    // Build query with search functionality for admin use
+    let query = supabaseUser
       .from("interview")
       .select("*")
       .eq("user_id", userIdParam);
+
+    // Add search filters if search query is provided
+    if (searchQuery && searchQuery.trim()) {
+      const trimmedQuery = searchQuery.trim();
+      query = query.or(
+        `company_name.ilike.%${trimmedQuery}%,position.ilike.%${trimmedQuery}%,interviewer.ilike.%${trimmedQuery}%`
+      );
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       return handleCORS(
@@ -186,10 +199,22 @@ export async function GET(request: NextRequest) {
   }
 
   const user_id = userData.user.id;
-  const { data, error } = await supabaseUser
+
+  // Build query with search functionality
+  let query = supabaseUser
     .from("interview")
     .select("*")
     .eq("user_id", user_id);
+
+  // Add search filters if search query is provided
+  if (searchQuery && searchQuery.trim()) {
+    const trimmedQuery = searchQuery.trim();
+    query = query.or(
+      `company_name.ilike.%${trimmedQuery}%,position.ilike.%${trimmedQuery}%,interviewer.ilike.%${trimmedQuery}%`
+    );
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     logError("GET /api/interview", error);
