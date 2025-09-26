@@ -118,6 +118,8 @@ export async function GET(request: NextRequest) {
   // If userId is provided as a query param, fetch all applications for that user (admin/API use)
   const { searchParams } = new URL(request.url);
   const userIdParam = searchParams.get("userId");
+  const searchQuery = searchParams.get("search");
+
   if (userIdParam) {
     // Only allow this for authorized/admin users in production!
     const access_token = getAccessToken(request);
@@ -182,10 +184,23 @@ export async function GET(request: NextRequest) {
     );
   }
   const user_id = userData.user.id;
-  const { data, error } = await supabaseUser
+
+  // Build query with search functionality
+  let query = supabaseUser
     .from("application")
     .select("*")
     .eq("user_id", user_id);
+
+  // Add search filters if search query is provided
+  if (searchQuery && searchQuery.trim()) {
+    const trimmedQuery = searchQuery.trim();
+    query = query.or(
+      `company_name.ilike.%${trimmedQuery}%,position.ilike.%${trimmedQuery}%`
+    );
+  }
+
+  const { data, error } = await query;
+
   if (error) {
     logError("GET /api/application", error);
     return handleCORS(
