@@ -16,6 +16,7 @@
 
 # testing
 /coverage
+*.lcov
 
 # next.js
 /apps/web/.next/
@@ -46,3 +47,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# jest
+jest.config.js.map
+*.test.js.map
+*.spec.js.map
+
+# editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
