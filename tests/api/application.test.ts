@@ -14,7 +14,7 @@ describe('Application API Tests', () => {
         user_id: 'user-123',
         application_date: '2025-01-01',
         priority_level: 'high',
-        notes: 'Exciting opportunity'
+        notes: 'Exciting opportunity',
       };
 
       // Test required fields
@@ -31,14 +31,21 @@ describe('Application API Tests', () => {
     });
 
     it('should validate application status values', () => {
-      const validStatuses = ['applied', 'interviewing', 'offered', 'rejected', 'accepted', 'declined'];
+      const validStatuses = [
+        'applied',
+        'interviewing',
+        'offered',
+        'rejected',
+        'accepted',
+        'declined',
+      ];
       const invalidStatuses = ['pending', 'unknown', '', null];
 
-      validStatuses.forEach(status => {
+      validStatuses.forEach((status) => {
         expect(validStatuses).toContain(status);
       });
 
-      invalidStatuses.forEach(status => {
+      invalidStatuses.forEach((status) => {
         expect(validStatuses).not.toContain(status);
       });
     });
@@ -47,11 +54,11 @@ describe('Application API Tests', () => {
       const validPriorities = ['low', 'medium', 'high'];
       const invalidPriorities = ['urgent', 'normal', '', null];
 
-      validPriorities.forEach(priority => {
+      validPriorities.forEach((priority) => {
         expect(validPriorities).toContain(priority);
       });
 
-      invalidPriorities.forEach(priority => {
+      invalidPriorities.forEach((priority) => {
         expect(validPriorities).not.toContain(priority);
       });
     });
@@ -59,26 +66,22 @@ describe('Application API Tests', () => {
 
   describe('Business Logic Validation', () => {
     it('should validate application date format', () => {
-      const validDates = [
-        '2025-01-01',
-        '2025-12-31',
-        '2024-06-15'
-      ];
+      const validDates = ['2025-01-01', '2025-12-31', '2024-06-15'];
 
       const invalidDates = [
         '01/01/2025',
         // '2025-13-01', // JavaScript Date is forgiving
-        // '2025-01-32', // JavaScript Date is forgiving  
-        'invalid-date'
+        // '2025-01-32', // JavaScript Date is forgiving
+        'invalid-date',
       ];
 
-      validDates.forEach(date => {
+      validDates.forEach((date) => {
         expect(() => new Date(date)).not.toThrow();
         const dateObj = new Date(date);
         expect(dateObj.getTime()).not.toBeNaN();
       });
 
-      invalidDates.forEach(date => {
+      invalidDates.forEach((date) => {
         if (date === 'invalid-date') {
           const dateObj = new Date(date);
           expect(dateObj.getTime()).toBeNaN();
@@ -93,16 +96,16 @@ describe('Application API Tests', () => {
 
     it('should validate status transitions', () => {
       const validTransitions = {
-        'applied': ['interviewing', 'rejected'],
-        'interviewing': ['offered', 'rejected'],
-        'offered': ['accepted', 'declined'],
-        'rejected': [], // Terminal state
-        'accepted': [], // Terminal state
-        'declined': [] // Terminal state
+        applied: ['interviewing', 'rejected'],
+        interviewing: ['offered', 'rejected'],
+        offered: ['accepted', 'declined'],
+        rejected: [], // Terminal state
+        accepted: [], // Terminal state
+        declined: [], // Terminal state
       };
 
       Object.entries(validTransitions).forEach(([fromStatus, allowedNextStates]) => {
-        allowedNextStates.forEach(nextStatus => {
+        allowedNextStates.forEach((nextStatus) => {
           expect(typeof nextStatus).toBe('string');
           expect(nextStatus.length).toBeGreaterThan(0);
         });
@@ -129,12 +132,12 @@ describe('Application API Tests', () => {
             company_name: 'Google',
             position: 'Software Engineer',
             status: 'applied',
-            user_id: 'user-123'
-          }
+            user_id: 'user-123',
+          },
         ],
         total: 1,
         page: 1,
-        limit: 10
+        limit: 10,
       };
 
       expect(Array.isArray(mockResponse.data)).toBe(true);
@@ -151,7 +154,7 @@ describe('Application API Tests', () => {
         application_date: '2025-01-01',
         priority_level: 'high',
         notes: 'Dream job',
-        url: 'https://apple.com/careers'
+        url: 'https://apple.com/careers',
       };
 
       // Required fields check
@@ -170,7 +173,7 @@ describe('Application API Tests', () => {
         company_name: 'Microsoft',
         position: 'Senior Software Engineer',
         status: 'interviewing',
-        notes: 'Updated after phone screening'
+        notes: 'Updated after phone screening',
       };
 
       expect(validUpdateRequest.id).toBeTruthy();
@@ -180,7 +183,7 @@ describe('Application API Tests', () => {
 
     it('should validate DELETE endpoint request structure', () => {
       const validDeleteRequest = {
-        id: 1
+        id: 1,
       };
 
       expect(validDeleteRequest.id).toBeTruthy();
@@ -194,7 +197,7 @@ describe('Application API Tests', () => {
       const errorResponse = {
         error: 'Validation failed',
         message: 'Company name is required',
-        status: 400
+        status: 400,
       };
 
       expect(errorResponse.error).toBeTruthy();
@@ -207,10 +210,10 @@ describe('Application API Tests', () => {
         'Company name is required',
         'Position is required',
         'Status is required',
-        'User ID is required'
+        'User ID is required',
       ];
 
-      missingFieldErrors.forEach(error => {
+      missingFieldErrors.forEach((error) => {
         expect(error).toMatch(/is required$/);
         expect(error.length).toBeGreaterThan(0);
       });
@@ -220,10 +223,10 @@ describe('Application API Tests', () => {
       const authErrors = [
         { status: 401, message: 'Unauthorized' },
         { status: 403, message: 'Forbidden' },
-        { status: 401, message: 'Invalid token' }
+        { status: 401, message: 'Invalid token' },
       ];
 
-      authErrors.forEach(error => {
+      authErrors.forEach((error) => {
         expect([401, 403].includes(error.status)).toBe(true);
         expect(error.message).toBeTruthy();
       });
@@ -236,7 +239,7 @@ describe('Application API Tests', () => {
         q: 'software engineer',
         page: 1,
         limit: 10,
-        status: 'applied'
+        status: 'applied',
       };
 
       expect(typeof searchParams.q).toBe('string');
@@ -251,23 +254,23 @@ describe('Application API Tests', () => {
       const validPagination = [
         { page: 1, limit: 10 },
         { page: 5, limit: 20 },
-        { page: 1, limit: 50 }
+        { page: 1, limit: 50 },
       ];
 
       const invalidPagination = [
         { page: 0, limit: 10 },
         { page: 1, limit: 0 },
         { page: -1, limit: 10 },
-        { page: 1, limit: 1000 }
+        { page: 1, limit: 1000 },
       ];
 
-      validPagination.forEach(params => {
+      validPagination.forEach((params) => {
         expect(params.page).toBeGreaterThan(0);
         expect(params.limit).toBeGreaterThan(0);
         expect(params.limit).toBeLessThanOrEqual(100);
       });
 
-      invalidPagination.forEach(params => {
+      invalidPagination.forEach((params) => {
         const isValid = params.page > 0 && params.limit > 0 && params.limit <= 100;
         expect(isValid).toBe(false);
       });
@@ -279,10 +282,12 @@ describe('Application API Tests', () => {
         priority_level: 'high',
         company_name: 'Google',
         date_from: '2025-01-01',
-        date_to: '2025-12-31'
+        date_to: '2025-12-31',
       };
 
-      expect(['applied', 'interviewing', 'offered', 'rejected'].includes(filterParams.status)).toBe(true);
+      expect(['applied', 'interviewing', 'offered', 'rejected'].includes(filterParams.status)).toBe(
+        true
+      );
       expect(['low', 'medium', 'high'].includes(filterParams.priority_level)).toBe(true);
       expect(typeof filterParams.company_name).toBe('string');
       expect(() => new Date(filterParams.date_from)).not.toThrow();

@@ -148,14 +148,12 @@ appli_stash/
    This will compile the extension to the `apps/extension/dist` folder.
 
 2. **Load in Chrome:**
-
    - Open Chrome and navigate to `chrome://extensions`
    - Enable "Developer mode" (toggle in the top-right corner)
    - Click "Load unpacked" and select the `apps/extension/dist` directory
    - The AppliStash extension should now appear in your browser toolbar
 
 3. **Extension Features:**
-
    - Basic login functionality integrated with the web app
    - Lightweight popup interface
    - Direct integration with Chrome APIs

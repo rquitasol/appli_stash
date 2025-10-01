@@ -1,29 +1,24 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useUser } from "../../components/context/UserContext";
-import { Modal } from "@shared/components/ui/Modal";
-import { ApplicationForm } from "../../components/forms/ApplicationForm";
-import { ContactForm } from "../../components/forms/ContactForm";
-import { InterviewForm } from "../../components/forms/InterviewForm";
-import { Board } from "../../components/board/Board";
-import { MainLayout } from "../../components/layout/MainLayout";
-import type { Application } from "@shared/types";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useUser } from '../../components/context/UserContext';
+import { Modal } from '@shared/components/ui/Modal';
+import { ApplicationForm } from '../../components/forms/ApplicationForm';
+import { ContactForm } from '../../components/forms/ContactForm';
+import { InterviewForm } from '../../components/forms/InterviewForm';
+import { Board } from '../../components/board/Board';
+import { MainLayout } from '../../components/layout/MainLayout';
+import type { Application } from '@shared/types';
 
 export default function DashboardPage() {
   const { user, loading } = useUser();
   const [modalOpen, setModalOpen] = useState(false);
-  const [contactModalOpen, setContactModalOpen] =
-    useState(false);
-  const [interviewModalOpen, setInterviewModalOpen] =
-    useState(false);
-  const [editApp, setEditApp] =
-    useState<Application | null>(null);
-  const [applications, setApplications] = useState<
-    Application[]
-  >([]);
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+  const [interviewModalOpen, setInterviewModalOpen] = useState(false);
+  const [editApp, setEditApp] = useState<Application | null>(null);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [appLoading, setAppLoading] = useState(true);
-  const [appError, setAppError] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [appError, setAppError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
@@ -31,36 +26,30 @@ export default function DashboardPage() {
     loadApplications();
   }, [user]);
 
-  const loadApplications = (search = "") => {
+  const loadApplications = (search = '') => {
     setAppLoading(true);
     setIsSearching(!!search);
 
     const url = search
-      ? `/api/application?search=${encodeURIComponent(
-          search
-        )}`
-      : "/api/application";
+      ? `/api/application?search=${encodeURIComponent(search)}`
+      : '/api/application';
 
     fetch(url, {
-      credentials: "include",
+      credentials: 'include',
     })
       .then(async (res) => {
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(
-            data.error || "Failed to fetch applications"
-          );
+          throw new Error(data.error || 'Failed to fetch applications');
         }
         return res.json();
       })
       .then((data) => {
         setApplications(data);
-        setAppError("");
+        setAppError('');
       })
       .catch((err) => {
-        setAppError(
-          err.message || "Failed to fetch applications"
-        );
+        setAppError(err.message || 'Failed to fetch applications');
       })
       .finally(() => {
         setAppLoading(false);
@@ -74,7 +63,7 @@ export default function DashboardPage() {
   };
 
   const handleClearSearch = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     loadApplications();
   };
 
@@ -84,11 +73,7 @@ export default function DashboardPage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Loading...
-      </div>
-    );
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
   if (!user) {
     return null;
@@ -98,24 +83,17 @@ export default function DashboardPage() {
     <MainLayout>
       <div className="p-4 bg-white">
         <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-          <h1 className="text-2xl font-bold text-[#581C87]">
-            Applications
-          </h1>
+          <h1 className="text-2xl font-bold text-[#581C87]">Applications</h1>
 
           <div className="flex items-center gap-3 flex-wrap">
             {/* Search Box */}
-            <form
-              onSubmit={handleSearch}
-              className="relative"
-            >
+            <form onSubmit={handleSearch} className="relative">
               <div className="flex">
                 <input
                   type="text"
                   placeholder="Search by company or position..."
                   value={searchQuery}
-                  onChange={(e) =>
-                    setSearchQuery(e.target.value)
-                  }
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-64 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                 />
                 <div className="flex">
@@ -183,12 +161,11 @@ export default function DashboardPage() {
         {searchQuery && (
           <div className="mb-4 text-sm text-gray-600">
             {appLoading ? (
-              "Searching..."
+              'Searching...'
             ) : (
               <>
                 Showing {applications.length} result
-                {applications.length !== 1 ? "s" : ""} for
-                &ldquo;{searchQuery}&rdquo;
+                {applications.length !== 1 ? 's' : ''} for &ldquo;{searchQuery}&rdquo;
                 <button
                   onClick={handleClearSearch}
                   className="ml-2 text-primary hover:text-secondary underline"
@@ -209,17 +186,10 @@ export default function DashboardPage() {
             {appError}
           </div>
         ) : (
-          <Board
-            applications={applications}
-            onItemClick={setEditApp}
-          />
+          <Board applications={applications} onItemClick={setEditApp} />
         )}
 
-        <Modal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          title="Add Application"
-        >
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add Application">
           <ApplicationForm
             onSuccess={() => {
               setModalOpen(false);
@@ -252,11 +222,7 @@ export default function DashboardPage() {
           />
         </Modal>
 
-        <Modal
-          isOpen={!!editApp}
-          onClose={() => setEditApp(null)}
-          title="Edit Application"
-        >
+        <Modal isOpen={!!editApp} onClose={() => setEditApp(null)} title="Edit Application">
           {editApp && (
             <ApplicationForm
               initial={editApp}

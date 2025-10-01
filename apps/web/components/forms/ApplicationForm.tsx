@@ -1,20 +1,19 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { Button } from "@shared/components/ui/Button";
-import { Input } from "@shared/components/ui/Input";
-import { Select } from "@shared/components/ui/Select";
-import { TextArea } from "@shared/components/ui/TextArea";
-import { Alert, AlertDescription } from "@shared/components/ui/Alert";
-import { Application, ApplicationStatus, ApplicationPriority } from "@applistash/shared";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { Button } from '@shared/components/ui/Button';
+import { Input } from '@shared/components/ui/Input';
+import { Select } from '@shared/components/ui/Select';
+import { TextArea } from '@shared/components/ui/TextArea';
+import { Alert, AlertDescription } from '@shared/components/ui/Alert';
+import { Application, ApplicationStatus, ApplicationPriority } from '@applistash/shared';
 
-
-const defaultForm: Omit<Application, "id" | "user_id"> = {
-  company_name: "",
-  url: "",
+const defaultForm: Omit<Application, 'id' | 'user_id'> = {
+  company_name: '',
+  url: '',
   status: ApplicationStatus.Saved,
-  position: "",
+  position: '',
   priority_level: ApplicationPriority.Low,
-  notes: "",
+  notes: '',
 };
 
 interface ApplicationFormProps {
@@ -23,13 +22,13 @@ interface ApplicationFormProps {
 }
 
 export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
-  const [form, setForm] = useState<Omit<Application, "id" | "user_id">>({
+  const [form, setForm] = useState<Omit<Application, 'id' | 'user_id'>>({
     ...defaultForm,
     ...initial,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Check for column-specific status on mount
@@ -37,38 +36,40 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
     const columnStatus = localStorage.getItem('newApplicationStatus');
     if (columnStatus && !initial) {
       console.log('Setting status from localStorage:', columnStatus);
-      setForm(prev => ({
+      setForm((prev) => ({
         ...prev,
-        status: columnStatus as ApplicationStatus
+        status: columnStatus as ApplicationStatus,
       }));
       // Clear localStorage after using it
       localStorage.removeItem('newApplicationStatus');
     }
   }, [initial]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
     try {
-      const res = await fetch("/api/application", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/application', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Failed to add application");
+        setError(data.error || 'Failed to add application');
       } else {
-        setSuccess("Application added successfully!");
+        setSuccess('Application added successfully!');
         setShowSuccess(true);
         setForm(defaultForm);
         if (onSuccess) {
@@ -79,7 +80,7 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
         }
       }
     } catch {
-      setError("Network error. Please try again.");
+      setError('Network error. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -126,7 +127,9 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
         required
       >
         {Object.values(ApplicationStatus).map((status) => (
-          <option key={status} value={status}>{status}</option>
+          <option key={status} value={status}>
+            {status}
+          </option>
         ))}
       </Select>
       <div className="space-y-2">
@@ -148,7 +151,9 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
           required
         >
           {Object.values(ApplicationPriority).map((priority) => (
-            <option key={priority} value={priority}>{priority}</option>
+            <option key={priority} value={priority}>
+              {priority}
+            </option>
           ))}
         </Select>
       </div>
@@ -161,11 +166,11 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
         rows={3}
         placeholder="Additional notes about this application, interview details, contacts, etc..."
       />
-        <div className="flex justify-center mt-4">
-          <Button type="submit" disabled={isLoading} className="w-full">
-            {isLoading ? "Saving..." : "Save"}
-          </Button>
-        </div>
+      <div className="flex justify-center mt-4">
+        <Button type="submit" disabled={isLoading} className="w-full">
+          {isLoading ? 'Saving...' : 'Save'}
+        </Button>
+      </div>
     </form>
   );
 }

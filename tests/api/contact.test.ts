@@ -15,7 +15,7 @@ describe('Contact API Tests', () => {
         position: 'Senior Recruiter',
         linkedin: 'https://linkedin.com/in/johndoe',
         notes: 'Very responsive recruiter',
-        user_id: 'user-123'
+        user_id: 'user-123',
       };
 
       // Test required fields
@@ -36,7 +36,7 @@ describe('Contact API Tests', () => {
         'test@example.com',
         'user.name@domain.co.uk',
         'admin+recruiting@company.org',
-        'firstname.lastname@subdomain.example.com'
+        'firstname.lastname@subdomain.example.com',
       ];
 
       const invalidEmails = [
@@ -45,14 +45,14 @@ describe('Contact API Tests', () => {
         'user@',
         'user@domain',
         // 'user..name@domain.com', // This actually passes our simple regex
-        ''
+        '',
       ];
 
-      validEmails.forEach(email => {
+      validEmails.forEach((email) => {
         expect(email).toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
       });
 
-      invalidEmails.forEach(email => {
+      invalidEmails.forEach((email) => {
         expect(email).not.toMatch(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
       });
     });
@@ -63,7 +63,7 @@ describe('Contact API Tests', () => {
         '+44-20-7123-4567',
         '(555) 123-4567',
         '555.123.4567',
-        '+1 555 123 4567'
+        '+1 555 123 4567',
       ];
 
       const invalidPhones = [
@@ -73,13 +73,14 @@ describe('Contact API Tests', () => {
         // '++1-555-0123' // This is 12 chars, not < 5
       ];
 
-      validPhones.forEach(phone => {
+      validPhones.forEach((phone) => {
         expect(phone.length).toBeGreaterThan(5);
         expect(phone).toMatch(/[\d\s\-\+\(\)\.]/);
       });
 
-      invalidPhones.forEach(phone => {
-        if (phone.length > 0 && phone.length < 10) { // Adjust logic for actual invalid phones
+      invalidPhones.forEach((phone) => {
+        if (phone.length > 0 && phone.length < 10) {
+          // Adjust logic for actual invalid phones
           expect(phone.length).toBeLessThan(10);
         }
       });
@@ -90,21 +91,16 @@ describe('Contact API Tests', () => {
         'https://linkedin.com/in/johndoe',
         'https://www.linkedin.com/in/jane-smith',
         'linkedin.com/in/user123',
-        'https://linkedin.com/company/google'
+        'https://linkedin.com/company/google',
       ];
 
-      const invalidLinkedInUrls = [
-        'https://facebook.com/johndoe',
-        'invalid-url',
-        'linkedin',
-        ''
-      ];
+      const invalidLinkedInUrls = ['https://facebook.com/johndoe', 'invalid-url', 'linkedin', ''];
 
-      validLinkedInUrls.forEach(url => {
+      validLinkedInUrls.forEach((url) => {
         expect(url).toMatch(/linkedin\.com/i);
       });
 
-      invalidLinkedInUrls.forEach(url => {
+      invalidLinkedInUrls.forEach((url) => {
         if (url.length > 0) {
           expect(url).not.toMatch(/linkedin\.com/i);
         }
@@ -128,12 +124,16 @@ describe('Contact API Tests', () => {
         contact_id: 1,
         application_id: 5,
         relationship_type: 'recruiter',
-        primary_contact: true
+        primary_contact: true,
       };
 
       expect(typeof contactWithApplication.contact_id).toBe('number');
       expect(typeof contactWithApplication.application_id).toBe('number');
-      expect(['recruiter', 'hiring_manager', 'employee', 'reference'].includes(contactWithApplication.relationship_type)).toBe(true);
+      expect(
+        ['recruiter', 'hiring_manager', 'employee', 'reference'].includes(
+          contactWithApplication.relationship_type
+        )
+      ).toBe(true);
       expect(typeof contactWithApplication.primary_contact).toBe('boolean');
     });
 
@@ -141,12 +141,12 @@ describe('Contact API Tests', () => {
       const contactCategories = ['recruiter', 'hiring_manager', 'team_member', 'hr', 'reference'];
       const invalidCategories = ['unknown', '', 'other'];
 
-      contactCategories.forEach(category => {
+      contactCategories.forEach((category) => {
         expect(typeof category).toBe('string');
         expect(category.length).toBeGreaterThan(0);
       });
 
-      invalidCategories.forEach(category => {
+      invalidCategories.forEach((category) => {
         expect(contactCategories).not.toContain(category);
       });
     });
@@ -162,12 +162,12 @@ describe('Contact API Tests', () => {
             email: 'john@example.com',
             company: 'Google',
             position: 'Recruiter',
-            user_id: 'user-123'
-          }
+            user_id: 'user-123',
+          },
         ],
         total: 1,
         page: 1,
-        limit: 10
+        limit: 10,
       };
 
       expect(Array.isArray(mockResponse.data)).toBe(true);
@@ -184,7 +184,7 @@ describe('Contact API Tests', () => {
         company: 'Microsoft',
         position: 'Senior Technical Recruiter',
         linkedin: 'https://linkedin.com/in/janesmith',
-        notes: 'Specializes in engineering roles'
+        notes: 'Specializes in engineering roles',
       };
 
       // Required fields
@@ -204,7 +204,7 @@ describe('Contact API Tests', () => {
         name: 'John Doe Updated',
         email: 'john.doe.updated@example.com',
         phone: '+1-555-9999',
-        notes: 'Updated contact information'
+        notes: 'Updated contact information',
       };
 
       expect(validUpdateRequest.id).toBeTruthy();
@@ -215,7 +215,7 @@ describe('Contact API Tests', () => {
 
     it('should validate DELETE endpoint request structure', () => {
       const validDeleteRequest = {
-        id: 1
+        id: 1,
       };
 
       expect(validDeleteRequest.id).toBeTruthy();
@@ -231,7 +231,7 @@ describe('Contact API Tests', () => {
         company: 'Google',
         position: 'recruiter',
         page: 1,
-        limit: 20
+        limit: 20,
       };
 
       expect(typeof searchParams.q).toBe('string');
@@ -245,7 +245,7 @@ describe('Contact API Tests', () => {
       const searchFields = ['name', 'email', 'company', 'position', 'notes'];
       const searchTerm = 'google';
 
-      searchFields.forEach(field => {
+      searchFields.forEach((field) => {
         expect(typeof field).toBe('string');
         expect(field.length).toBeGreaterThan(0);
       });
@@ -257,10 +257,13 @@ describe('Contact API Tests', () => {
           email: 'john@google.com',
           company: 'Google',
           position: 'Recruiter',
-          notes: 'Works at Google headquarters'
+          notes: 'Works at Google headquarters',
         };
-        
-        return mockData[field as keyof typeof mockData]?.toLowerCase().includes(term.toLowerCase()) || false;
+
+        return (
+          mockData[field as keyof typeof mockData]?.toLowerCase().includes(term.toLowerCase()) ||
+          false
+        );
       };
 
       expect(searchInField('email', searchTerm)).toBe(true);
@@ -284,7 +287,7 @@ describe('Contact API Tests', () => {
       const errorResponse = {
         error: 'Validation failed',
         message: 'Email is required',
-        status: 400
+        status: 400,
       };
 
       expect(errorResponse.error).toBeTruthy();
@@ -296,7 +299,7 @@ describe('Contact API Tests', () => {
       const duplicateEmailError = {
         error: 'Conflict',
         message: 'Contact with this email already exists',
-        status: 409
+        status: 409,
       };
 
       expect(duplicateEmailError.status).toBe(409);
@@ -306,16 +309,16 @@ describe('Contact API Tests', () => {
 
     it('should validate invalid email format error', () => {
       const invalidEmails = ['invalid-email', '@domain.com', 'user@'];
-      
-      invalidEmails.forEach(email => {
+
+      invalidEmails.forEach((email) => {
         const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         expect(isValid).toBe(false);
-        
+
         if (!isValid) {
           const error = {
             field: 'email',
             message: 'Invalid email format',
-            value: email
+            value: email,
           };
           expect(error.field).toBe('email');
           expect(error.message).toContain('Invalid email');
@@ -329,13 +332,15 @@ describe('Contact API Tests', () => {
       const contactApplications = [
         { contact_id: 1, application_id: 5, role: 'recruiter' },
         { contact_id: 2, application_id: 5, role: 'hiring_manager' },
-        { contact_id: 3, application_id: 7, role: 'reference' }
+        { contact_id: 3, application_id: 7, role: 'reference' },
       ];
 
-      contactApplications.forEach(relationship => {
+      contactApplications.forEach((relationship) => {
         expect(typeof relationship.contact_id).toBe('number');
         expect(typeof relationship.application_id).toBe('number');
-        expect(['recruiter', 'hiring_manager', 'reference', 'employee'].includes(relationship.role)).toBe(true);
+        expect(
+          ['recruiter', 'hiring_manager', 'reference', 'employee'].includes(relationship.role)
+        ).toBe(true);
       });
     });
 
@@ -345,11 +350,13 @@ describe('Contact API Tests', () => {
         type: 'email',
         date: '2025-01-01T10:00:00Z',
         subject: 'Follow up on application',
-        notes: 'Sent thank you email after interview'
+        notes: 'Sent thank you email after interview',
       };
 
       expect(typeof communicationHistory.contact_id).toBe('number');
-      expect(['email', 'phone', 'linkedin', 'in_person'].includes(communicationHistory.type)).toBe(true);
+      expect(['email', 'phone', 'linkedin', 'in_person'].includes(communicationHistory.type)).toBe(
+        true
+      );
       expect(() => new Date(communicationHistory.date)).not.toThrow();
       expect(typeof communicationHistory.subject).toBe('string');
       expect(typeof communicationHistory.notes).toBe('string');

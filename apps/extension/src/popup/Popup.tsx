@@ -6,7 +6,7 @@ import { User } from '../content/overlay';
 import { API_BASE_URL } from '../config/api';
 
 // API Base URL
-console.log("Popup: Using API base URL:", API_BASE_URL);
+console.log('Popup: Using API base URL:', API_BASE_URL);
 const Popup: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState('');
@@ -21,20 +21,20 @@ const Popup: React.FC = () => {
         method: 'GET',
         credentials: 'include', // Include cookies in the request
       });
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }
-      
+
       const userData = await response.json();
-      
+
       // Update user state with fetched data
       const user: User = {
         email: userData.email,
         name: userData.name || userData.email.split('@')[0],
         token: userData.token || '', // Store token if available
       };
-      
+
       // Store the user data in Chrome storage
       chrome.storage.local.set({ user }, () => {
         setUser(user);
@@ -64,7 +64,7 @@ const Popup: React.FC = () => {
   const handleLoginSubmit = async (email: string, password: string) => {
     setLoading(true);
     setError('');
-    
+
     try {
       // Call the Next.js API to authenticate
       const response = await fetch(`${API_BASE_URL}/api/login`, {
@@ -75,15 +75,15 @@ const Popup: React.FC = () => {
         body: JSON.stringify({ email, password }),
         credentials: 'include', // Include cookies in the request
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         setError(data.error || 'Login failed');
         setLoading(false);
         return { success: false, error: data.error || 'Login failed' };
       }
-      
+
       // Extract token from the Authorization header if present
       let token = '';
       // Check if the token is in the response headers
@@ -94,16 +94,16 @@ const Popup: React.FC = () => {
         // Alternatively, check if token is in the response body
         token = data.token;
       }
-      
+
       // After successful login, store user data and redirect to dashboard website
       const user: User = {
         email: data.user.email,
         name: data.user.name || email.split('@')[0],
         token: token,
       };
-      
+
       console.log('Token received:', token ? 'Yes (length: ' + token.length + ')' : 'No');
-      
+
       // Store the user data in Chrome storage
       chrome.storage.local.set({ user }, () => {
         // Open the dashboard in a new tab
@@ -112,7 +112,7 @@ const Popup: React.FC = () => {
         setUser(user);
         setLoading(false);
       });
-      
+
       return { success: true };
     } catch (error) {
       console.error('Login error:', error);
@@ -121,7 +121,7 @@ const Popup: React.FC = () => {
       return { success: false, error: 'Network error. Please try again.' };
     }
   };
-  
+
   const handleLogout = async () => {
     try {
       // Call the signout API to invalidate the session
@@ -165,7 +165,7 @@ const Popup: React.FC = () => {
     <div className="app-container">
       <div className="login-container">
         <h2>AppliStash</h2>
-        <LoginForm 
+        <LoginForm
           onSubmit={handleLoginSubmit}
           apiEndpoint={null} // Using our custom submit handler above instead
           isExtension={false} // Set to false to allow redirection
@@ -173,7 +173,10 @@ const Popup: React.FC = () => {
         />
         {error && <div className="error">{error}</div>}
         <div className="register-link">
-          Not signed in? <a href="#" onClick={() => window.open(`${API_BASE_URL}/register`, '_blank')}>Register</a>
+          Not signed in?{' '}
+          <a href="#" onClick={() => window.open(`${API_BASE_URL}/register`, '_blank')}>
+            Register
+          </a>
         </div>
       </div>
     </div>

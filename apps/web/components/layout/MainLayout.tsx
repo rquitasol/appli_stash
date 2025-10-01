@@ -1,9 +1,9 @@
-"use client";
-import React, { useEffect, ReactNode } from "react";
-import { useUser } from "../context/UserContext";
-import Header from "./Header";
-import Footer from "./Footer";
-import { Sidebar } from "./Sidebar";
+'use client';
+import React, { useEffect, ReactNode } from 'react';
+import { useUser } from '../context/UserContext';
+import Header from './Header';
+import Footer from './Footer';
+import { Sidebar } from './Sidebar';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -14,7 +14,7 @@ export function MainLayout({ children }: MainLayoutProps) {
 
   useEffect(() => {
     if (!loading && !user) {
-      window.location.href = "/login";
+      window.location.href = '/login';
     }
   }, [user, loading]);
 
@@ -32,18 +32,16 @@ export function MainLayout({ children }: MainLayoutProps) {
       <div className="flex-shrink-0 h-[5vh] w-full">
         <Header />
       </div>
-      
+
       {/* Main Content Area with Sidebar - 85% */}
       <div className="flex flex-1 h-[92.5vh]">
         {/* Sidebar */}
         <Sidebar />
-        
+
         {/* Page Content */}
-        <main className="flex-1 overflow-auto">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
-      
+
       {/* Footer - 5% */}
       <div className="flex-shrink-0 h-[2.5vh] w-full text-sm">
         <Footer />

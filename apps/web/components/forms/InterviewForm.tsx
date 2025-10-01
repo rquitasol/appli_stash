@@ -1,10 +1,10 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { Button } from "@shared/components/ui/Button";
-import { Input } from "@shared/components/ui/Input";
-import { Select } from "@shared/components/ui/Select";
-import { TextArea } from "@shared/components/ui/TextArea";
-import { Alert, AlertDescription } from "@shared/components/ui/Alert";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { Button } from '@shared/components/ui/Button';
+import { Input } from '@shared/components/ui/Input';
+import { Select } from '@shared/components/ui/Select';
+import { TextArea } from '@shared/components/ui/TextArea';
+import { Alert, AlertDescription } from '@shared/components/ui/Alert';
 
 export interface Interview {
   id?: string;
@@ -17,36 +17,36 @@ export interface Interview {
   notes: string;
 }
 
-const defaultForm: Omit<Interview, "id" | "user_id"> = {
+const defaultForm: Omit<Interview, 'id' | 'user_id'> = {
   application_id: undefined,
-  type: "",
-  schedule: "",
-  interviewer: "",
-  status: "",
-  notes: "",
+  type: '',
+  schedule: '',
+  interviewer: '',
+  status: '',
+  notes: '',
 };
 
 // Common interview types
 const interviewTypes = [
-  "Phone Screening",
-  "Technical Interview",
-  "Behavioral Interview",
-  "System Design",
-  "Coding Challenge",
-  "Panel Interview",
-  "Final Interview",
-  "HR Interview",
-  "Other"
+  'Phone Screening',
+  'Technical Interview',
+  'Behavioral Interview',
+  'System Design',
+  'Coding Challenge',
+  'Panel Interview',
+  'Final Interview',
+  'HR Interview',
+  'Other',
 ];
 
 // Interview statuses
 const interviewStatuses = [
-  "Scheduled",
-  "Completed",
-  "Cancelled",
-  "Rescheduled",
-  "No Show",
-  "Pending"
+  'Scheduled',
+  'Completed',
+  'Cancelled',
+  'Rescheduled',
+  'No Show',
+  'Pending',
 ];
 
 interface InterviewFormProps {
@@ -55,43 +55,47 @@ interface InterviewFormProps {
 }
 
 export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
-  const [form, setForm] = useState<Omit<Interview, "id" | "user_id">>({
+  const [form, setForm] = useState<Omit<Interview, 'id' | 'user_id'>>({
     ...defaultForm,
     ...initial,
   });
-  const [applications, setApplications] = useState<Array<{id: number, company_name: string, position: string}>>([]);
+  const [applications, setApplications] = useState<
+    Array<{ id: number; company_name: string; position: string }>
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Fetch user's applications for the dropdown
   useEffect(() => {
     const fetchApplications = async () => {
       try {
-        const response = await fetch("/api/application", {
-          credentials: "include"
+        const response = await fetch('/api/application', {
+          credentials: 'include',
         });
         if (response.ok) {
           const data = await response.json();
           setApplications(data || []);
         }
       } catch (err) {
-        console.error("Failed to fetch applications:", err);
+        console.error('Failed to fetch applications:', err);
       }
     };
 
     fetchApplications();
   }, []);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) {
     const { name, value } = e.target;
-    
+
     // Handle application_id as number
-    if (name === "application_id") {
-      setForm((prev) => ({ 
-        ...prev, 
-        [name]: value ? parseInt(value, 10) : undefined 
+    if (name === 'application_id') {
+      setForm((prev) => ({
+        ...prev,
+        [name]: value ? parseInt(value, 10) : undefined,
       }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
@@ -100,22 +104,20 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
     setIsLoading(true);
 
     try {
-      const method = initial?.id ? "PUT" : "POST";
-      const url = "/api/interview";
-      
-      const body = initial?.id 
-        ? { ...form, id: initial.id }
-        : form;
+      const method = initial?.id ? 'PUT' : 'POST';
+      const url = '/api/interview';
+
+      const body = initial?.id ? { ...form, id: initial.id } : form;
 
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       });
@@ -123,12 +125,14 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to save interview");
+        throw new Error(data.error || 'Failed to save interview');
       }
 
-      setSuccess(initial?.id ? "Interview updated successfully!" : "Interview created successfully!");
+      setSuccess(
+        initial?.id ? 'Interview updated successfully!' : 'Interview created successfully!'
+      );
       setShowSuccess(true);
-      
+
       // Reset form if creating new interview
       if (!initial?.id) {
         setForm(defaultForm);
@@ -146,9 +150,8 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
       setTimeout(() => {
         setShowSuccess(false);
       }, 3000);
-
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -156,12 +159,12 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
 
   // Format datetime-local input value
   const formatDateTimeLocal = (dateString: string) => {
-    if (!dateString) return "";
+    if (!dateString) return '';
     try {
       const date = new Date(dateString);
       return date.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:mm
     } catch {
-      return "";
+      return '';
     }
   };
 
@@ -172,7 +175,7 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
       const isoString = new Date(value).toISOString();
       setForm((prev) => ({ ...prev, schedule: isoString }));
     } else {
-      setForm((prev) => ({ ...prev, schedule: "" }));
+      setForm((prev) => ({ ...prev, schedule: '' }));
     }
   };
 
@@ -180,17 +183,13 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {showSuccess && success && (
         <Alert type="success">
-          <AlertDescription>
-            {success}
-          </AlertDescription>
+          <AlertDescription>{success}</AlertDescription>
         </Alert>
       )}
-      
+
       {error && (
         <Alert type="error">
-          <AlertDescription>
-            {error}
-          </AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
@@ -199,7 +198,7 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
           label="Application"
           id="application_id"
           name="application_id"
-          value={form.application_id?.toString() || ""}
+          value={form.application_id?.toString() || ''}
           onChange={handleChange}
         >
           <option value="">Select an application (optional)</option>
@@ -281,7 +280,7 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
 
       <div className="flex justify-center mt-4">
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? "Saving..." : initial?.id ? "Update Interview" : "Add Interview"}
+          {isLoading ? 'Saving...' : initial?.id ? 'Update Interview' : 'Add Interview'}
         </Button>
       </div>
     </form>

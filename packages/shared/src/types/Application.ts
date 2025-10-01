@@ -1,5 +1,5 @@
-import { ApplicationStatus } from "./ApplicationStatus";
-import { ApplicationPriority } from "./ApplicationPriority";
+import { ApplicationStatus } from './ApplicationStatus';
+import { ApplicationPriority } from './ApplicationPriority';
 
 export interface Application {
   id?: string;

@@ -1,5 +1,4 @@
-
-"use client";
+'use client';
 import React, { useState, useCallback } from 'react';
 import { Button } from '@shared/components/ui/Button';
 import { Input } from '@shared/components/ui/Input';
@@ -29,14 +28,14 @@ interface ApiResponse {
 function useFormValidation() {
   const validateForm = useCallback((formData: RegistrationFormData): ValidationErrors => {
     const errors: ValidationErrors = {};
-    
+
     // Name validation
     if (!formData.name.trim()) {
       errors.name = 'Name is required';
     } else if (formData.name.trim().length < 2) {
       errors.name = 'Name must be at least 2 characters';
     }
-    
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) {
@@ -44,7 +43,7 @@ function useFormValidation() {
     } else if (!emailRegex.test(formData.email)) {
       errors.email = 'Please enter a valid email address';
     }
-    
+
     // Password validation
     if (!formData.password) {
       errors.password = 'Password is required';
@@ -53,100 +52,101 @@ function useFormValidation() {
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
       errors.password = 'Password must contain uppercase, lowercase, and number';
     }
-    
+
     return errors;
   }, []);
-  
+
   return { validateForm };
 }
 
 async function signUp(userData: RegistrationFormData): Promise<ApiResponse> {
-    try {
-  const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || `HTTP error! status: ${response.status}`);
-      }
-      
-      return data;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw new Error('Network error occurred. Please try again.');
+  try {
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || `HTTP error! status: ${response.status}`);
     }
-  };
+
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    throw new Error('Network error occurred. Please try again.');
+  }
+}
 
 export function RegistrationForm() {
   // Form state
   const [formData, setFormData] = useState<RegistrationFormData>({
     name: '',
     email: '',
-    password: ''
+    password: '',
   });
-  
+
   // UI state
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [apiError, setApiError] = useState('');
-  
+
   // Custom hooks
   const { validateForm } = useFormValidation();
 
   // Handle input changes with validation
-  const handleInputChange = useCallback((field: keyof RegistrationFormData) => 
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback(
+    (field: keyof RegistrationFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      
+
       // Update form data
-      setFormData(prev => ({ ...prev, [field]: value }));
-      
+      setFormData((prev) => ({ ...prev, [field]: value }));
+
       // Clear field-specific error when user starts typing
       if (errors[field]) {
-        setErrors(prev => ({ ...prev, [field]: undefined }));
+        setErrors((prev) => ({ ...prev, [field]: undefined }));
       }
-      
+
       // Clear API error when user makes changes
       if (apiError) {
         setApiError('');
       }
-    }, [errors, apiError]);
+    },
+    [errors, apiError]
+  );
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Reset states
     setApiError('');
-    
+
     // Validate form
     const validationErrors = validateForm(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-    
+
     // Clear validation errors
     setErrors({});
     setIsLoading(true);
-    
+
     try {
-  await signUp(formData);
+      await signUp(formData);
 
-  // Success handling
-  setFormData({ name: '', email: '', password: '' });
+      // Success handling
+      setFormData({ name: '', email: '', password: '' });
 
-  // Redirect to dashboard after successful registration
-  window.location.href = '/dashboard';
-      
+      // Redirect to dashboard after successful registration
+      window.location.href = '/dashboard';
     } catch (error) {
       setApiError(error instanceof Error ? error.message : 'Registration failed');
     } finally {
@@ -155,7 +155,7 @@ export function RegistrationForm() {
   };
 
   return (
-  <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
       {/* API Error Alert */}
       {apiError && (
         <Alert>
@@ -176,8 +176,9 @@ export function RegistrationForm() {
           onChange={handleInputChange('name')}
           disabled={isLoading}
           className={`transition-colors ${
-            errors.name ? 'border-red-500 focus:ring-red-500' : 
-            'border-slate-300 focus:ring-blue-500'
+            errors.name
+              ? 'border-red-500 focus:ring-red-500'
+              : 'border-slate-300 focus:ring-blue-500'
           }`}
           aria-describedby={errors.name ? 'name-error' : undefined}
         />
@@ -201,8 +202,9 @@ export function RegistrationForm() {
           onChange={handleInputChange('email')}
           disabled={isLoading}
           className={`transition-colors ${
-            errors.email ? 'border-red-500 focus:ring-red-500' : 
-            'border-slate-300 focus:ring-blue-500'
+            errors.email
+              ? 'border-red-500 focus:ring-red-500'
+              : 'border-slate-300 focus:ring-blue-500'
           }`}
           aria-describedby={errors.email ? 'email-error' : undefined}
         />
@@ -239,11 +241,7 @@ export function RegistrationForm() {
 
       {/* Submit Button */}
       <div className="flex justify-center">
-        <Button 
-          type="submit" 
-          disabled={isLoading}
-          
-        >
+        <Button type="submit" disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

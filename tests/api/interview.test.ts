@@ -17,7 +17,7 @@ describe('Interview API Tests', () => {
         duration: 60,
         notes: 'Prepare coding questions and system design',
         status: 'scheduled',
-        user_id: 'user-123'
+        user_id: 'user-123',
       };
 
       // Test required fields
@@ -38,53 +38,37 @@ describe('Interview API Tests', () => {
       const validTypes = [
         'phone',
         'video',
-        'in-person', 
+        'in-person',
         'technical',
         'behavioral',
         'panel',
         'case_study',
-        'presentation'
+        'presentation',
       ];
 
-      const invalidTypes = [
-        'unknown',
-        'invalid',
-        '',
-        'random-type'
-      ];
+      const invalidTypes = ['unknown', 'invalid', '', 'random-type'];
 
-      validTypes.forEach(type => {
+      validTypes.forEach((type) => {
         expect(typeof type).toBe('string');
         expect(type.length).toBeGreaterThan(0);
       });
 
-      invalidTypes.forEach(type => {
+      invalidTypes.forEach((type) => {
         expect(validTypes).not.toContain(type);
       });
     });
 
     it('should validate interview status values', () => {
-      const validStatuses = [
-        'scheduled',
-        'completed',
-        'cancelled',
-        'rescheduled',
-        'no_show'
-      ];
+      const validStatuses = ['scheduled', 'completed', 'cancelled', 'rescheduled', 'no_show'];
 
-      const invalidStatuses = [
-        'pending',
-        'unknown',
-        '',
-        'invalid'
-      ];
+      const invalidStatuses = ['pending', 'unknown', '', 'invalid'];
 
-      validStatuses.forEach(status => {
+      validStatuses.forEach((status) => {
         expect(typeof status).toBe('string');
         expect(status.length).toBeGreaterThan(0);
       });
 
-      invalidStatuses.forEach(status => {
+      invalidStatuses.forEach((status) => {
         expect(validStatuses).not.toContain(status);
       });
     });
@@ -93,7 +77,7 @@ describe('Interview API Tests', () => {
       const validSchedules = [
         '2025-10-01T14:00:00.000Z',
         '2025-12-25T09:30:00Z',
-        '2025-06-15T16:45:30.500Z'
+        '2025-06-15T16:45:30.500Z',
       ];
 
       const invalidSchedules = [
@@ -103,19 +87,19 @@ describe('Interview API Tests', () => {
         // '2025-13-01T25:00:00Z' // JavaScript Date is forgiving
       ];
 
-      validSchedules.forEach(schedule => {
+      validSchedules.forEach((schedule) => {
         expect(() => new Date(schedule)).not.toThrow();
         const dateObj = new Date(schedule);
         expect(dateObj.getTime()).not.toBeNaN();
         expect(dateObj.toISOString()).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
       });
 
-      invalidSchedules.forEach(schedule => {
+      invalidSchedules.forEach((schedule) => {
         if (schedule === 'invalid-date') {
           const dateObj = new Date(schedule);
           expect(dateObj.getTime()).toBeNaN();
         } else if (schedule === '2025-10-01') {
-          // Date-only format is valid 
+          // Date-only format is valid
           const dateObj = new Date(schedule);
           expect(dateObj.getTime()).not.toBeNaN();
           expect(schedule).not.toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
@@ -147,7 +131,7 @@ describe('Interview API Tests', () => {
 
       const businessHourDate = new Date('2025-10-01T14:00:00Z');
       const afterHoursDate = new Date('2025-10-01T20:00:00Z');
-      
+
       expect(isBusinessHours(businessHourDate)).toBe(true);
       expect(isBusinessHours(afterHoursDate)).toBe(false);
     });
@@ -156,12 +140,12 @@ describe('Interview API Tests', () => {
       const validDurations = [15, 30, 45, 60, 90, 120]; // minutes
       const invalidDurations = [0, -30, 5, 300]; // too short, negative, too long
 
-      validDurations.forEach(duration => {
+      validDurations.forEach((duration) => {
         expect(duration).toBeGreaterThan(10);
         expect(duration).toBeLessThanOrEqual(180);
       });
 
-      invalidDurations.forEach(duration => {
+      invalidDurations.forEach((duration) => {
         const isValid = duration > 10 && duration <= 180;
         expect(isValid).toBe(false);
       });
@@ -173,14 +157,14 @@ describe('Interview API Tests', () => {
           required_skills: ['JavaScript', 'React', 'Node.js'],
           coding_problems: true,
           system_design: true,
-          preparation_time: 120 // minutes
+          preparation_time: 120, // minutes
         },
         behavioral: {
           questions_count: 5,
           star_method: true,
           company_research: true,
-          preparation_time: 60
-        }
+          preparation_time: 60,
+        },
       };
 
       // Technical interview validation
@@ -206,7 +190,7 @@ describe('Interview API Tests', () => {
         areas_for_improvement: ['Could improve system design knowledge'],
         overall_notes: 'Strong candidate, recommend for next round',
         recommendation: 'advance',
-        next_steps: 'Schedule final round with team lead'
+        next_steps: 'Schedule final round with team lead',
       };
 
       expect(typeof interviewFeedback.interview_id).toBe('number');
@@ -214,7 +198,9 @@ describe('Interview API Tests', () => {
       expect(interviewFeedback.rating).toBeLessThanOrEqual(5);
       expect(Array.isArray(interviewFeedback.strengths)).toBe(true);
       expect(Array.isArray(interviewFeedback.areas_for_improvement)).toBe(true);
-      expect(['advance', 'reject', 'undecided'].includes(interviewFeedback.recommendation)).toBe(true);
+      expect(['advance', 'reject', 'undecided'].includes(interviewFeedback.recommendation)).toBe(
+        true
+      );
     });
   });
 
@@ -229,12 +215,12 @@ describe('Interview API Tests', () => {
             type: 'technical',
             interviewer: 'Jane Smith',
             status: 'scheduled',
-            user_id: 'user-123'
-          }
+            user_id: 'user-123',
+          },
         ],
         total: 1,
         page: 1,
-        limit: 10
+        limit: 10,
       };
 
       expect(Array.isArray(mockResponse.data)).toBe(true);
@@ -253,7 +239,7 @@ describe('Interview API Tests', () => {
         location: 'Office Building A, Room 301',
         duration: 60,
         notes: 'Prepare coding questions',
-        status: 'scheduled'
+        status: 'scheduled',
       };
 
       // Required fields
@@ -275,19 +261,21 @@ describe('Interview API Tests', () => {
         interviewer: 'John Doe',
         location: 'Virtual - Zoom Room 123',
         notes: 'Updated interview details',
-        status: 'rescheduled'
+        status: 'rescheduled',
       };
 
       expect(validUpdateRequest.id).toBeTruthy();
       expect(typeof validUpdateRequest.id).toBe('number');
       expect(() => new Date(validUpdateRequest.schedule)).not.toThrow();
-      expect(['scheduled', 'completed', 'cancelled', 'rescheduled'].includes(validUpdateRequest.status)).toBe(true);
+      expect(
+        ['scheduled', 'completed', 'cancelled', 'rescheduled'].includes(validUpdateRequest.status)
+      ).toBe(true);
     });
 
     it('should validate DELETE endpoint request structure', () => {
       const validDeleteRequest = {
         id: 1,
-        reason: 'Interview cancelled by candidate'
+        reason: 'Interview cancelled by candidate',
       };
 
       expect(validDeleteRequest.id).toBeTruthy();
@@ -307,11 +295,13 @@ describe('Interview API Tests', () => {
         date_from: '2025-01-01',
         date_to: '2025-12-31',
         page: 1,
-        limit: 20
+        limit: 20,
       };
 
       expect(typeof searchParams.q).toBe('string');
-      expect(['phone', 'video', 'in-person', 'technical', 'behavioral'].includes(searchParams.type)).toBe(true);
+      expect(
+        ['phone', 'video', 'in-person', 'technical', 'behavioral'].includes(searchParams.type)
+      ).toBe(true);
       expect(['scheduled', 'completed', 'cancelled'].includes(searchParams.status)).toBe(true);
       expect(searchParams.page).toBeGreaterThan(0);
       expect(searchParams.limit).toBeGreaterThan(0);
@@ -320,7 +310,7 @@ describe('Interview API Tests', () => {
     it('should validate date range filtering', () => {
       const dateRange = {
         from: '2025-01-01',
-        to: '2025-12-31'
+        to: '2025-12-31',
       };
 
       const fromDate = new Date(dateRange.from);
@@ -335,7 +325,7 @@ describe('Interview API Tests', () => {
       const interviewers = ['Jane Smith', 'John Doe', 'Sarah Wilson'];
       const searchTerm = 'jane';
 
-      const matchingInterviewers = interviewers.filter(interviewer =>
+      const matchingInterviewers = interviewers.filter((interviewer) =>
         interviewer.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
@@ -355,8 +345,8 @@ describe('Interview API Tests', () => {
         attendees: ['candidate@email.com', 'interviewer@company.com'],
         reminders: [
           { method: 'email', minutes: 1440 }, // 24 hours
-          { method: 'popup', minutes: 15 }    // 15 minutes
-        ]
+          { method: 'popup', minutes: 15 }, // 15 minutes
+        ],
       };
 
       expect(calendarEvent.title).toBeTruthy();
@@ -374,10 +364,10 @@ describe('Interview API Tests', () => {
       const scheduleWithTimezone = {
         utc: '2025-10-01T14:00:00Z',
         eastern: '2025-10-01T10:00:00-04:00',
-        pacific: '2025-10-01T07:00:00-07:00'
+        pacific: '2025-10-01T07:00:00-07:00',
       };
 
-      Object.values(scheduleWithTimezone).forEach(time => {
+      Object.values(scheduleWithTimezone).forEach((time) => {
         expect(() => new Date(time)).not.toThrow();
         const dateObj = new Date(time);
         expect(dateObj.getTime()).not.toBeNaN();
@@ -398,7 +388,7 @@ describe('Interview API Tests', () => {
       const errorResponse = {
         error: 'Validation failed',
         message: 'Schedule date is required',
-        status: 400
+        status: 400,
       };
 
       expect(errorResponse.error).toBeTruthy();
@@ -411,7 +401,7 @@ describe('Interview API Tests', () => {
         error: 'Scheduling conflict',
         message: 'Scheduling conflict: Another interview is already scheduled at this time',
         status: 409,
-        conflicting_interview_id: 5
+        conflicting_interview_id: 5,
       };
 
       expect(conflictError.status).toBe(409);
@@ -424,7 +414,7 @@ describe('Interview API Tests', () => {
         error: 'Invalid reference',
         message: 'Application with ID 999 does not exist',
         status: 404,
-        field: 'application_id'
+        field: 'application_id',
       };
 
       expect(invalidApplicationError.status).toBe(404);

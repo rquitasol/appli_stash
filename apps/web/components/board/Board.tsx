@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { ApplicationStatus, Application } from "@shared/types";
-import { Column } from "./Column";
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import React, { useEffect, useState } from 'react';
+import { ApplicationStatus, Application } from '@shared/types';
+import { Column } from './Column';
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 
 interface BoardProps {
   applications: Application[];
@@ -11,7 +11,7 @@ interface BoardProps {
 export function Board({ applications, onItemClick }: BoardProps) {
   // State to keep track of applications locally
   const [localApplications, setLocalApplications] = useState<Application[]>(applications);
-  
+
   // Update local applications when the prop changes
   useEffect(() => {
     setLocalApplications(applications);
@@ -26,12 +26,12 @@ export function Board({ applications, onItemClick }: BoardProps) {
   // Update application status via API
   const updateApplicationStatus = async (appId: string, newStatus: ApplicationStatus) => {
     if (!appId) return;
-    
+
     try {
       // Find the full application to ensure we have all required fields
-      const application = localApplications.find(app => String(app.id) === appId);
+      const application = localApplications.find((app) => String(app.id) === appId);
       if (!application) return;
-      
+
       const response = await fetch(`/api/application`, {
         method: 'PUT',
         headers: {
@@ -46,10 +46,10 @@ export function Board({ applications, onItemClick }: BoardProps) {
           position: application.position,
           url: application.url,
           priority_level: application.priority_level,
-          notes: application.notes
-        })
+          notes: application.notes,
+        }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Failed to update application status:', errorData);
@@ -62,35 +62,35 @@ export function Board({ applications, onItemClick }: BoardProps) {
   // Handle drag end event
   const handleDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
-    
+
     // If dropped outside a droppable area or in the same position
-    if (!destination || 
-        (source.droppableId === destination.droppableId && 
-         source.index === destination.index)) {
+    if (
+      !destination ||
+      (source.droppableId === destination.droppableId && source.index === destination.index)
+    ) {
       return;
     }
-    
+
     // Find the application that was dragged
     // draggableId might be a string representation of a number or a temp id
-    const application = localApplications.find(app => 
-      String(app.id) === draggableId || 
-      (draggableId.startsWith('temp-') && `temp-${app.company_name}` === draggableId)
+    const application = localApplications.find(
+      (app) =>
+        String(app.id) === draggableId ||
+        (draggableId.startsWith('temp-') && `temp-${app.company_name}` === draggableId)
     );
-    
+
     if (!application) return;
-    
+
     // Create a new status based on the destination column
     const newStatus = destination.droppableId as ApplicationStatus;
-    
+
     // Update local state immediately for better UX
-    const updatedApplications = localApplications.map(app => 
-      app.id === application.id 
-        ? { ...app, status: newStatus } 
-        : app
+    const updatedApplications = localApplications.map((app) =>
+      app.id === application.id ? { ...app, status: newStatus } : app
     );
-    
+
     setLocalApplications(updatedApplications);
-    
+
     // Send update to the server
     updateApplicationStatus(String(application.id), newStatus);
   };

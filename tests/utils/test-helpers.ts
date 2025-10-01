@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest } from 'next/server';
 
 // Mock Supabase client
 export const mockSupabaseClient = {
@@ -23,19 +23,19 @@ export const mockSuccessResponse = {
 
 export const mockErrorResponse = {
   data: null,
-  error: { message: "Database error" },
+  error: { message: 'Database error' },
 };
 
 // Mock authenticated user
 export const mockUser = {
-  id: "test-user-id",
-  email: "test@example.com",
-  aud: "authenticated",
-  role: "authenticated",
+  id: 'test-user-id',
+  email: 'test@example.com',
+  aud: 'authenticated',
+  role: 'authenticated',
 };
 
 // Mock JWT token
-export const mockAccessToken = "mock-jwt-token";
+export const mockAccessToken = 'mock-jwt-token';
 
 // Mock request helper
 export function createMockRequest(options: {
@@ -45,26 +45,17 @@ export function createMockRequest(options: {
   headers?: Record<string, string>;
   searchParams?: Record<string, string>;
 }): NextRequest {
-  const url =
-    options.url || "http://localhost:3000/api/test";
-  const searchParams = new URLSearchParams(
-    options.searchParams || {}
-  );
-  const fullUrl = `${url}${
-    searchParams.toString()
-      ? `?${searchParams.toString()}`
-      : ""
-  }`;
+  const url = options.url || 'http://localhost:3000/api/test';
+  const searchParams = new URLSearchParams(options.searchParams || {});
+  const fullUrl = `${url}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
 
   const request = new NextRequest(fullUrl, {
     method: options.method,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
-    body: options.body
-      ? JSON.stringify(options.body)
-      : undefined,
+    body: options.body ? JSON.stringify(options.body) : undefined,
   });
 
   return request;
