@@ -1,7 +1,7 @@
-import "@testing-library/jest-dom";
+import '@testing-library/jest-dom';
 
 // Mock Next.js router
-jest.mock("next/navigation", () => ({
+jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: jest.fn(),
     replace: jest.fn(),
@@ -13,27 +13,25 @@ jest.mock("next/navigation", () => ({
   useSearchParams: () => ({
     get: jest.fn(),
   }),
-  usePathname: () => "/test-path",
+  usePathname: () => '/test-path',
 }));
 
-import "@testing-library/jest-dom";
+import '@testing-library/jest-dom';
 
 // Mock environment variables
-process.env.NODE_ENV = "test";
-process.env.NEXT_PUBLIC_SUPABASE_URL =
-  "http://localhost:54321";
-process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = "test-anon-key";
-process.env.SUPABASE_SERVICE_ROLE_KEY =
-  "test-service-role-key";
-process.env.JWT_SECRET = "test-jwt-secret";
+process.env.NODE_ENV = 'test';
+process.env.NEXT_PUBLIC_SUPABASE_URL = 'http://localhost:54321';
+process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key';
+process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
+process.env.JWT_SECRET = 'test-jwt-secret';
 
 // Mock Next.js router
-jest.mock("next/router", () => ({
+jest.mock('next/router', () => ({
   useRouter: () => ({
     push: jest.fn(),
-    pathname: "/",
+    pathname: '/',
     query: {},
-    asPath: "/",
+    asPath: '/',
   }),
 }));
 
@@ -41,46 +39,52 @@ jest.mock("next/router", () => ({
 jest.setTimeout(10000);
 
 // Mock Web API globals for Node environment
-if (typeof Request === "undefined") {
+if (typeof Request === 'undefined') {
   global.Request = class Request {
-    constructor(public url: string, public init?: any) {}
+    constructor(
+      public url: string,
+      public init?: any
+    ) {}
     json() {
       return Promise.resolve({});
     }
     text() {
-      return Promise.resolve("");
+      return Promise.resolve('');
     }
     headers = new Map();
-    method = "GET";
+    method = 'GET';
   } as any;
 }
 
-if (typeof Response === "undefined") {
+if (typeof Response === 'undefined') {
   global.Response = class Response {
-    constructor(public body?: any, public init?: any) {}
+    constructor(
+      public body?: any,
+      public init?: any
+    ) {}
     static json(data: any, init?: any) {
       return new Response(JSON.stringify(data), {
         ...init,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           ...init?.headers,
         },
       });
     }
     json() {
-      return Promise.resolve(JSON.parse(this.body || "{}"));
+      return Promise.resolve(JSON.parse(this.body || '{}'));
     }
     text() {
-      return Promise.resolve(this.body || "");
+      return Promise.resolve(this.body || '');
     }
     ok = true;
     status = 200;
-    statusText = "OK";
+    statusText = 'OK';
     headers = new Map();
   } as any;
 }
 
-if (typeof Headers === "undefined") {
+if (typeof Headers === 'undefined') {
   global.Headers = Map as any;
 }
 

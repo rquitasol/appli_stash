@@ -9,16 +9,15 @@ class GlassdoorExtractor implements JobSiteExtractor {
    * Returns true if this is a Glassdoor job page
    */
   canHandle(url: string): boolean {
-    return url.includes('glassdoor.com/job') || 
-           url.includes('glassdoor.com/Job');
+    return url.includes('glassdoor.com/job') || url.includes('glassdoor.com/Job');
   }
 
   /**
    * Extract job data from Glassdoor page
    */
   extractJobData(): JobData | null {
-    console.log("AppliStash: Extracting Glassdoor job data");
-    
+    console.log('AppliStash: Extracting Glassdoor job data');
+
     try {
       // Glassdoor specific selectors
       const titleElement = document.querySelector(
@@ -33,69 +32,69 @@ class GlassdoorExtractor implements JobSiteExtractor {
       const descriptionElement = document.querySelector(
         ".JobDetails_jobDescriptionWrapper__BTDTA, [data-test='jobDesc'], .desc"
       );
-      
-      console.log("AppliStash: Found Glassdoor job elements", {
+
+      console.log('AppliStash: Found Glassdoor job elements', {
         title: titleElement?.textContent,
         company: companyElement?.textContent,
         location: locationElement?.textContent,
-        description: descriptionElement ? "Yes" : "No"
+        description: descriptionElement ? 'Yes' : 'No',
       });
 
       // Extract the text content and clean it up
-      const title = titleElement?.textContent?.trim() || "";
-      const company = companyElement?.textContent?.trim() || "";
-      const location = locationElement?.textContent?.trim() || "";
-      const description = descriptionElement?.textContent?.trim() || "";
+      const title = titleElement?.textContent?.trim() || '';
+      const company = companyElement?.textContent?.trim() || '';
+      const location = locationElement?.textContent?.trim() || '';
+      const description = descriptionElement?.textContent?.trim() || '';
       const url = window.location.href;
-      
+
       // If title or company is missing, try alternative extraction
       if (!title || !company) {
-        console.log("AppliStash: Missing title or company, trying alternative extraction");
-        
+        console.log('AppliStash: Missing title or company, trying alternative extraction');
+
         // Try to get job title from document title
         const pageTitle = document.title;
-        const parts = pageTitle.split(" at ");
-        
+        const parts = pageTitle.split(' at ');
+
         if (parts.length >= 2) {
-          const extractedTitle = parts[0].trim().replace(" Job", "");
+          const extractedTitle = parts[0].trim().replace(' Job', '');
           let extractedCompany = parts[1].trim();
-          
+
           // If company has location, remove it
-          if (extractedCompany.includes(" in ")) {
-            extractedCompany = extractedCompany.split(" in ")[0].trim();
+          if (extractedCompany.includes(' in ')) {
+            extractedCompany = extractedCompany.split(' in ')[0].trim();
           }
-          
-          console.log("AppliStash: Using extracted data from page title:", {
+
+          console.log('AppliStash: Using extracted data from page title:', {
             title: extractedTitle,
-            company: extractedCompany
+            company: extractedCompany,
           });
-          
+
           return {
             title: extractedTitle || title,
-            company: extractedCompany || company || "Glassdoor",
-            location: location || "Unknown location",
-            description: description || "No description available",
+            company: extractedCompany || company || 'Glassdoor',
+            location: location || 'Unknown location',
+            description: description || 'No description available',
             url,
-            source: "Glassdoor"
+            source: 'Glassdoor',
           };
         }
-        
+
         if (!title && !company) {
-          console.log("AppliStash: Could not extract job data from Glassdoor");
+          console.log('AppliStash: Could not extract job data from Glassdoor');
           return null;
         }
       }
-      
+
       return {
         title,
         company,
         location,
         description,
         url,
-        source: "Glassdoor",
+        source: 'Glassdoor',
       };
     } catch (error) {
-      console.error("AppliStash: Error extracting Glassdoor job data", error);
+      console.error('AppliStash: Error extracting Glassdoor job data', error);
       return null;
     }
   }

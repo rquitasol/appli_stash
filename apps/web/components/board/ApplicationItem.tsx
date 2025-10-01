@@ -1,6 +1,6 @@
-import React from "react";
-import type { Application } from "@shared/types";
-import { Draggable } from "@hello-pangea/dnd";
+import React from 'react';
+import type { Application } from '@shared/types';
+import { Draggable } from '@hello-pangea/dnd';
 
 interface ApplicationItemProps {
   application: Application;
@@ -9,14 +9,12 @@ interface ApplicationItemProps {
 }
 
 export function ApplicationItem({ application, onClick, index }: ApplicationItemProps) {
-
-  
   // Determine border color based on application priority
   const getBorderColor = () => {
     const priorityColors: Record<string, string> = {
-      'Low': '#F59E0B', // amber for Low priority
-      'Medium': '#10B981', // emerald green for Medium priority
-      'High': '#EF4444', // red for High priority
+      Low: '#F59E0B', // amber for Low priority
+      Medium: '#10B981', // emerald green for Medium priority
+      High: '#EF4444', // red for High priority
     };
 
     return priorityColors[application.priority_level] || '#F59E0B';
@@ -26,9 +24,9 @@ export function ApplicationItem({ application, onClick, index }: ApplicationItem
   const getCompanyDisplay = () => {
     // For this example, we'll use the first letter of company name
     const firstLetter = application.company_name.charAt(0).toUpperCase();
-    
+
     return (
-      <div 
+      <div
         className="w-6 h-6 rounded-full flex items-center justify-center text-white font-bold text-sm"
         style={{ backgroundColor: getBorderColor() }}
       >
@@ -36,10 +34,10 @@ export function ApplicationItem({ application, onClick, index }: ApplicationItem
       </div>
     );
   };
-  
+
   return (
-    <Draggable 
-      draggableId={application.id ? String(application.id) : `temp-${application.company_name}`} 
+    <Draggable
+      draggableId={application.id ? String(application.id) : `temp-${application.company_name}`}
       index={index}
     >
       {(provided, snapshot) => (
@@ -50,13 +48,13 @@ export function ApplicationItem({ application, onClick, index }: ApplicationItem
           className={`bg-white rounded-lg p-3 border border-gray-200 cursor-pointer transition-all duration-200 ${
             snapshot.isDragging ? 'shadow-lg ring-2 ring-primary ring-opacity-50' : ''
           }`}
-          style={{ 
+          style={{
             ...provided.draggableProps.style,
-            boxShadow: snapshot.isDragging 
-              ? '0px 8px 16px rgba(0, 0, 0, 0.1)' 
+            boxShadow: snapshot.isDragging
+              ? '0px 8px 16px rgba(0, 0, 0, 0.1)'
               : '0px 2px 6px rgba(0, 0, 0, 0.05)',
             borderLeftWidth: '4px',
-            borderLeftColor: getBorderColor()
+            borderLeftColor: getBorderColor(),
           }}
           onClick={(e) => {
             if (!snapshot.isDragging && onClick) {
@@ -74,9 +72,6 @@ export function ApplicationItem({ application, onClick, index }: ApplicationItem
               <div className="flex-1 ml-1">
                 <div className="text-secondary text-base font-semibold">{application.position}</div>
                 <div className="text-gray-500 text-sm">{application.company_name}</div>
-              </div>
-              <div className="text-secondary text-sm whitespace-nowrap">
-                1mo
               </div>
             </div>
           </div>

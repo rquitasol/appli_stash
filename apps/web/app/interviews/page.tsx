@@ -1,90 +1,66 @@
-"use client";
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
-import { MainLayout } from "../../components/layout/MainLayout";
-import {
-  InterviewItem,
-  Interview,
-} from "../../components/board/InterviewItem";
-import { CalendarView } from "../../components/calendar/CalendarView";
-import { Button } from "@shared/components/ui/Button";
-import { Modal } from "@shared/components/ui/Modal";
-import { InterviewForm } from "../../components/forms/InterviewForm";
+'use client';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { MainLayout } from '../../components/layout/MainLayout';
+import { InterviewItem, Interview } from '../../components/board/InterviewItem';
+import { CalendarView } from '../../components/calendar/CalendarView';
+import { Button } from '@shared/components/ui/Button';
+import { Modal } from '@shared/components/ui/Modal';
+import { InterviewForm } from '../../components/forms/InterviewForm';
 
 export default function InterviewsPage() {
-  const [interviews, setInterviews] = useState<Interview[]>(
-    []
-  );
+  const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedInterview, setSelectedInterview] =
-    useState<Interview | null>(null);
-  const [viewMode, setViewMode] = useState<
-    "normal" | "calendar"
-  >("normal");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
+  const [viewMode, setViewMode] = useState<'normal' | 'calendar'>('normal');
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
 
   // Mock data for demonstration - wrapped in useMemo to avoid recreating on every render
   const mockInterviews: Interview[] = useMemo(
     () => [
       {
-        id: "1",
-        type: "Phone",
-        schedule: new Date(
-          Date.now() + 86400000
-        ).toISOString(), // Tomorrow
-        interviewer: "Sarah Johnson",
-        status: "Scheduled",
-        notes: "Initial phone screening with HR",
-        company_name: "TechCorp Inc",
-        position: "Senior Frontend Developer",
+        id: '1',
+        type: 'Phone',
+        schedule: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+        interviewer: 'Sarah Johnson',
+        status: 'Scheduled',
+        notes: 'Initial phone screening with HR',
+        company_name: 'TechCorp Inc',
+        position: 'Senior Frontend Developer',
         application_id: 1,
       },
       {
-        id: "2",
-        type: "Video",
-        schedule: new Date(
-          Date.now() + 172800000
-        ).toISOString(), // Day after tomorrow
-        interviewer: "Mike Chen",
-        status: "Scheduled",
-        notes:
-          "Technical interview focusing on React and TypeScript",
-        company_name: "StartupXYZ",
-        position: "Full Stack Developer",
+        id: '2',
+        type: 'Video',
+        schedule: new Date(Date.now() + 172800000).toISOString(), // Day after tomorrow
+        interviewer: 'Mike Chen',
+        status: 'Scheduled',
+        notes: 'Technical interview focusing on React and TypeScript',
+        company_name: 'StartupXYZ',
+        position: 'Full Stack Developer',
         application_id: 2,
       },
       {
-        id: "3",
-        type: "In-Person",
-        schedule: new Date(
-          Date.now() - 86400000
-        ).toISOString(), // Yesterday
-        interviewer: "Emily Davis",
-        status: "Completed",
-        notes:
-          "Great conversation about team culture and project management",
-        company_name: "Enterprise Solutions",
-        position: "Project Manager",
+        id: '3',
+        type: 'In-Person',
+        schedule: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+        interviewer: 'Emily Davis',
+        status: 'Completed',
+        notes: 'Great conversation about team culture and project management',
+        company_name: 'Enterprise Solutions',
+        position: 'Project Manager',
         application_id: 3,
       },
       {
-        id: "4",
-        type: "Technical",
-        schedule: new Date(
-          Date.now() + 259200000
-        ).toISOString(), // 3 days from now
-        interviewer: "Alex Rodriguez",
-        status: "Scheduled",
-        notes:
-          "Live coding session - prepare data structures and algorithms",
-        company_name: "Innovation Labs",
-        position: "Software Engineer",
+        id: '4',
+        type: 'Technical',
+        schedule: new Date(Date.now() + 259200000).toISOString(), // 3 days from now
+        interviewer: 'Alex Rodriguez',
+        status: 'Scheduled',
+        notes: 'Live coding session - prepare data structures and algorithms',
+        company_name: 'Innovation Labs',
+        position: 'Software Engineer',
         application_id: 4,
       },
     ],
@@ -97,7 +73,7 @@ export default function InterviewsPage() {
   };
 
   const loadInterviews = useCallback(
-    async (search = "") => {
+    async (search = '') => {
       const isSearch = search.trim().length > 0;
       if (isSearch) {
         setSearchLoading(true);
@@ -107,22 +83,20 @@ export default function InterviewsPage() {
 
       try {
         const url = search.trim()
-          ? `/api/interview?search=${encodeURIComponent(
-              search.trim()
-            )}`
-          : "/api/interview";
+          ? `/api/interview?search=${encodeURIComponent(search.trim())}`
+          : '/api/interview';
 
         const response = await fetch(url);
         if (response.ok) {
           const data = await response.json();
           setInterviews(data);
         } else {
-          console.error("Failed to fetch interviews");
+          console.error('Failed to fetch interviews');
           // Fallback to mock data for development
           setInterviews(mockInterviews);
         }
       } catch (error) {
-        console.error("Error fetching interviews:", error);
+        console.error('Error fetching interviews:', error);
         // Fallback to mock data for development
         setInterviews(mockInterviews);
       } finally {
@@ -142,7 +116,7 @@ export default function InterviewsPage() {
   };
 
   const handleClearSearch = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     loadInterviews();
   };
 
@@ -171,13 +145,9 @@ export default function InterviewsPage() {
   );
 
   // Sort interviews by date
-  const sortInterviewsByDate = (
-    interviews: Interview[]
-  ) => {
+  const sortInterviewsByDate = (interviews: Interview[]) => {
     return [...interviews].sort(
-      (a, b) =>
-        new Date(a.schedule).getTime() -
-        new Date(b.schedule).getTime()
+      (a, b) => new Date(a.schedule).getTime() - new Date(b.schedule).getTime()
     );
   };
 
@@ -189,26 +159,17 @@ export default function InterviewsPage() {
           <div className="mb-8">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h1 className="text-2xl font-bold text-[#581C87] mb-2">
-                  Interviews
-                </h1>
-                <p className="text-gray-600">
-                  Manage and track your job interviews
-                </p>
+                <h1 className="text-2xl font-bold text-[#581C87] mb-2">Interviews</h1>
+                <p className="text-gray-600">Manage and track your job interviews</p>
               </div>
               <div className="flex gap-3 flex-wrap">
                 {/* Search Box */}
-                <form
-                  onSubmit={handleSearchSubmit}
-                  className="relative"
-                >
+                <form onSubmit={handleSearchSubmit} className="relative">
                   <div className="flex">
                     <input
                       type="text"
                       value={searchQuery}
-                      onChange={(e) =>
-                        setSearchQuery(e.target.value)
-                      }
+                      onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search by company, position, or interviewer..."
                       className="w-64 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                     />
@@ -276,10 +237,8 @@ export default function InterviewsPage() {
                 <p className="text-blue-800">
                   {interviews.length === 0
                     ? `No interviews found for "${searchQuery}"`
-                    : `Found ${
-                        interviews.length
-                      } interview${
-                        interviews.length === 1 ? "" : "s"
+                    : `Found ${interviews.length} interview${
+                        interviews.length === 1 ? '' : 's'
                       } for "${searchQuery}"`}
                   {interviews.length > 0 && (
                     <button
@@ -297,11 +256,11 @@ export default function InterviewsPage() {
             <div className="flex items-center space-x-2">
               <div className="bg-gray-100 rounded-lg p-1 flex">
                 <button
-                  onClick={() => setViewMode("normal")}
+                  onClick={() => setViewMode('normal')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    viewMode === "normal"
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-600 hover:text-gray-900"
+                    viewMode === 'normal'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   <svg
@@ -320,11 +279,11 @@ export default function InterviewsPage() {
                   Normal View
                 </button>
                 <button
-                  onClick={() => setViewMode("calendar")}
+                  onClick={() => setViewMode('calendar')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    viewMode === "calendar"
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-600 hover:text-gray-900"
+                    viewMode === 'calendar'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
                   <svg
@@ -369,13 +328,10 @@ export default function InterviewsPage() {
                 </svg>
               </div>
 
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                No interviews yet
-              </h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">No interviews yet</h2>
 
               <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-                Get started by adding your first interview.
-                Keep track of all your upcoming and past
+                Get started by adding your first interview. Keep track of all your upcoming and past
                 interviews in one place.
               </p>
 
@@ -386,17 +342,14 @@ export default function InterviewsPage() {
                 Add Your First Interview
               </Button>
             </div>
-          ) : viewMode === "calendar" ? (
+          ) : viewMode === 'calendar' ? (
             /* Calendar View */
-            <CalendarView
-              interviews={interviews}
-              onInterviewClick={handleInterviewClick}
-            />
+            <CalendarView interviews={interviews} onInterviewClick={handleInterviewClick} />
           ) : (
             /* Normal View - Interview Lists */
             <div className="space-y-8">
               {/* Upcoming Interviews */}
-              {groupedInterviews["Scheduled"] && (
+              {groupedInterviews['Scheduled'] && (
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                     <svg
@@ -412,13 +365,10 @@ export default function InterviewsPage() {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    Upcoming Interviews (
-                    {groupedInterviews["Scheduled"].length})
+                    Upcoming Interviews ({groupedInterviews['Scheduled'].length})
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {sortInterviewsByDate(
-                      groupedInterviews["Scheduled"]
-                    ).map((interview) => (
+                    {sortInterviewsByDate(groupedInterviews['Scheduled']).map((interview) => (
                       <InterviewItem
                         key={interview.id}
                         interview={interview}
@@ -430,7 +380,7 @@ export default function InterviewsPage() {
               )}
 
               {/* Completed Interviews */}
-              {groupedInterviews["Completed"] && (
+              {groupedInterviews['Completed'] && (
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                     <svg
@@ -446,13 +396,10 @@ export default function InterviewsPage() {
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    Completed Interviews (
-                    {groupedInterviews["Completed"].length})
+                    Completed Interviews ({groupedInterviews['Completed'].length})
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {sortInterviewsByDate(
-                      groupedInterviews["Completed"]
-                    )
+                    {sortInterviewsByDate(groupedInterviews['Completed'])
                       .reverse()
                       .map((interview) => (
                         <InterviewItem
@@ -466,48 +413,39 @@ export default function InterviewsPage() {
               )}
 
               {/* Other Statuses */}
-              {Object.entries(groupedInterviews).map(
-                ([status, statusInterviews]) => {
-                  if (
-                    status === "Scheduled" ||
-                    status === "Completed"
-                  )
-                    return null;
+              {Object.entries(groupedInterviews).map(([status, statusInterviews]) => {
+                if (status === 'Scheduled' || status === 'Completed') return null;
 
-                  return (
-                    <div key={status}>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
-                        <svg
-                          className="w-5 h-5 mr-2 text-gray-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        {status} Interviews (
-                        {statusInterviews.length})
-                      </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                        {sortInterviewsByDate(
-                          statusInterviews
-                        ).map((interview) => (
-                          <InterviewItem
-                            key={interview.id}
-                            interview={interview}
-                            onClick={handleInterviewClick}
-                          />
-                        ))}
-                      </div>
+                return (
+                  <div key={status}>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+                      <svg
+                        className="w-5 h-5 mr-2 text-gray-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      {status} Interviews ({statusInterviews.length})
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {sortInterviewsByDate(statusInterviews).map((interview) => (
+                        <InterviewItem
+                          key={interview.id}
+                          interview={interview}
+                          onClick={handleInterviewClick}
+                        />
+                      ))}
                     </div>
-                  );
-                }
-              )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -517,16 +455,9 @@ export default function InterviewsPage() {
       <Modal
         isOpen={modalOpen}
         onClose={handleCloseModal}
-        title={
-          selectedInterview
-            ? "Edit Interview"
-            : "Add Interview"
-        }
+        title={selectedInterview ? 'Edit Interview' : 'Add Interview'}
       >
-        <InterviewForm
-          initial={selectedInterview || undefined}
-          onSuccess={handleCloseModal}
-        />
+        <InterviewForm initial={selectedInterview || undefined} onSuccess={handleCloseModal} />
       </Modal>
     </MainLayout>
   );

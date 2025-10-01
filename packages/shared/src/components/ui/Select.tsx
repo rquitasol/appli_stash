@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
@@ -6,10 +6,10 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   children: React.ReactNode;
 }
 
-export function Select({ label, className = "", children, value, ...props }: SelectProps) {
+export function Select({ label, className = '', children, value, ...props }: SelectProps) {
   // Convert null value to empty string or undefined
-  const safeValue = value === null ? "" : value;
-  
+  const safeValue = value === null ? '' : value;
+
   return (
     <div className="mb-4 border-[#8B5CF6] text-[#8B5CF6]">
       <label htmlFor={props.id} className="block text-base font-semibold text-gray-700 mb-1">

@@ -1,5 +1,5 @@
-"use client";
-import React, { createContext, useContext, useEffect, useState } from "react";
+'use client';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface User {
   id: string;
@@ -21,12 +21,12 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch("/api/me");
+        const res = await fetch('/api/me');
         if (!res.ok) {
           setUser(null);
         } else {
           const data = await res.json();
-          console.log("Fetched user:", data);
+          console.log('Fetched user:', data);
           setUser(data);
         }
       } catch {
@@ -38,11 +38,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
-  return (
-    <UserContext.Provider value={{ user, loading }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ user, loading }}>{children}</UserContext.Provider>;
 }
 
 export function useUser() {

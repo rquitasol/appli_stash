@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,14 +16,14 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
     if (!isOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         onClose();
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
 
@@ -31,26 +31,26 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   useEffect(() => {
     if (isOpen) {
       previousActiveElement.current = document.activeElement;
-      
+
       // Focus the modal container
       if (modalRef.current) {
         modalRef.current.focus();
       }
-      
+
       // Prevent scrolling on the body
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
       // Restore scrolling
-      document.body.style.overflow = "";
-      
+      document.body.style.overflow = '';
+
       // Restore focus
-      if (previousActiveElement.current && "focus" in previousActiveElement.current) {
+      if (previousActiveElement.current && 'focus' in previousActiveElement.current) {
         (previousActiveElement.current as HTMLElement).focus();
       }
     }
-    
+
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [isOpen]);
 
@@ -64,15 +64,15 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 p-4" 
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 p-4"
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        backdropFilter: 'blur(2px)'
+        backdropFilter: 'blur(2px)',
       }}
       onClick={handleBackdropClick}
       aria-modal="true"
@@ -80,38 +80,40 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       tabIndex={-1}
       ref={modalRef}
     >
-      <div 
+      <div
         className="bg-white rounded-lg shadow-2xl w-auto max-w-md mx-auto relative overflow-hidden flex flex-col"
         style={{
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
           zIndex: 10000,
           borderRadius: '8px',
-          maxHeight: '90vh'
+          maxHeight: '90vh',
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div 
+        <div
           className="relative w-full flex-shrink-0"
-          style={{ 
-            backgroundColor: '#8B5CF6', 
+          style={{
+            backgroundColor: '#8B5CF6',
             borderTopLeftRadius: '8px',
             borderTopRightRadius: '8px',
-            padding: '10px'
+            padding: '10px',
           }}
         >
           {title && (
             <div className="flex items-center justify-between ">
               <h2 className="text-3xl font-bold text-white ml-4">
-                {title.includes("Application") 
-                  ? title.split("Application").map((part, i) => 
-                      i === 0 
-                        ? <React.Fragment key={`title-part-${i}`}>
-                            {part}<span className="font-bold">Application</span>
-                          </React.Fragment>
-                        : <React.Fragment key={`title-part-${i}`}>{part}</React.Fragment>
+                {title.includes('Application')
+                  ? title.split('Application').map((part, i) =>
+                      i === 0 ? (
+                        <React.Fragment key={`title-part-${i}`}>
+                          {part}
+                          <span className="font-bold">Application</span>
+                        </React.Fragment>
+                      ) : (
+                        <React.Fragment key={`title-part-${i}`}>{part}</React.Fragment>
+                      )
                     )
-                  : title
-                }
+                  : title}
               </h2>
               <button
                 className="text-white hover:text-gray-200 ml-4"
@@ -124,9 +126,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             </div>
           )}
         </div>
-        <div className="p-4 overflow-y-auto flex-1">
-          {children}
-        </div>
+        <div className="p-4 overflow-y-auto flex-1">{children}</div>
       </div>
     </div>
   );

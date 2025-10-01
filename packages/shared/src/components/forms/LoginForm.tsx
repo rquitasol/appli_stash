@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -10,11 +10,11 @@ interface LoginFormProps {
   isExtension?: boolean;
 }
 
-export function LoginForm({ 
-  onSubmit, 
-  apiEndpoint = '/api/login', 
+export function LoginForm({
+  onSubmit,
+  apiEndpoint = '/api/login',
   redirectUrl = '/dashboard',
-  isExtension = false
+  isExtension = false,
 }: LoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -77,14 +77,14 @@ export function LoginForm({
     <form onSubmit={handleSubmit}>
       <Input
         type="email"
-        label='Email'
+        label="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Email"
       />
       <Input
         type="password"
-        label='Password'
+        label="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"

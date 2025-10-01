@@ -1,18 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getSupabaseForUser } from "../../../lib/supabaseClient";
-import {
-  logError,
-  getAccessToken,
-} from "../../../lib/jwtUtils";
-import {
-  handleCORS,
-  handleOPTIONS,
-} from "../../../lib/corsHandler";
+import { NextRequest, NextResponse } from 'next/server';
+import { getSupabaseForUser } from '../../../lib/supabaseClient';
+import { logError, getAccessToken } from '../../../lib/jwtUtils';
+import { handleCORS, handleOPTIONS } from '../../../lib/corsHandler';
 
-import {
-  ApplicationPriority,
-  ApplicationStatus,
-} from "@shared/types";
+import { ApplicationPriority, ApplicationStatus } from '@shared/types';
 
 export interface Application {
   id?: string;
@@ -30,16 +21,12 @@ export async function POST(request: NextRequest) {
   const access_token = getAccessToken(request);
 
   if (!access_token) {
-    logError(
-      "POST /api/application",
-      "Unauthorized: No Supabase access token"
-    );
+    logError('POST /api/application', 'Unauthorized: No Supabase access token');
     return handleCORS(
       request,
       NextResponse.json(
         {
-          error:
-            "Unauthorized: Invalid or missing authentication.",
+          error: 'Unauthorized: Invalid or missing authentication.',
         },
         { status: 401 }
       )
@@ -63,21 +50,17 @@ export async function POST(request: NextRequest) {
     notes: string;
   } = body;
   // Get user id from JWT
-  const { data: userData, error: userError } =
-    await supabaseUser.auth.getUser();
+  const { data: userData, error: userError } = await supabaseUser.auth.getUser();
   if (userError || !userData.user) {
-    logError("POST /api/application", userError);
+    logError('POST /api/application', userError);
     return handleCORS(
       request,
-      NextResponse.json(
-        { error: "Failed to get user from access token" },
-        { status: 401 }
-      )
+      NextResponse.json({ error: 'Failed to get user from access token' }, { status: 401 })
     );
   }
   const user_id = userData.user.id;
   const { data, error } = await supabaseUser
-    .from("application")
+    .from('application')
     .insert([
       {
         user_id,
@@ -91,19 +74,10 @@ export async function POST(request: NextRequest) {
     ])
     .select();
   if (error) {
-    logError("POST /api/application", error);
-    return handleCORS(
-      request,
-      NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      )
-    );
+    logError('POST /api/application', error);
+    return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
   }
-  return handleCORS(
-    request,
-    NextResponse.json(data[0], { status: 201 })
-  );
+  return handleCORS(request, NextResponse.json(data[0], { status: 201 }));
 }
 
 /**
@@ -117,35 +91,23 @@ export function OPTIONS(request: NextRequest) {
 export async function GET(request: NextRequest) {
   // If userId is provided as a query param, fetch all applications for that user (admin/API use)
   const { searchParams } = new URL(request.url);
-  const userIdParam = searchParams.get("userId");
-  const searchQuery = searchParams.get("search");
+  const userIdParam = searchParams.get('userId');
+  const searchQuery = searchParams.get('search');
 
   if (userIdParam) {
     // Only allow this for authorized/admin users in production!
     const access_token = getAccessToken(request);
 
     if (!access_token) {
-      return handleCORS(
-        request,
-        NextResponse.json(
-          { error: "Unauthorized" },
-          { status: 401 }
-        )
-      );
+      return handleCORS(request, NextResponse.json({ error: 'Unauthorized' }, { status: 401 }));
     }
     const supabaseUser = getSupabaseForUser(access_token);
     const { data, error } = await supabaseUser
-      .from("application")
-      .select("*")
-      .eq("user_id", userIdParam);
+      .from('application')
+      .select('*')
+      .eq('user_id', userIdParam);
     if (error) {
-      return handleCORS(
-        request,
-        NextResponse.json(
-          { error: error.message },
-          { status: 500 }
-        )
-      );
+      return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
     }
     return handleCORS(request, NextResponse.json(data));
   }
@@ -154,16 +116,12 @@ export async function GET(request: NextRequest) {
   const access_token = getAccessToken(request);
 
   if (!access_token) {
-    logError(
-      "GET /api/application",
-      "Unauthorized: No Supabase access token"
-    );
+    logError('GET /api/application', 'Unauthorized: No Supabase access token');
     return handleCORS(
       request,
       NextResponse.json(
         {
-          error:
-            "Unauthorized: Invalid or missing authentication.",
+          error: 'Unauthorized: Invalid or missing authentication.',
         },
         { status: 401 }
       )
@@ -171,45 +129,30 @@ export async function GET(request: NextRequest) {
   }
   const supabaseUser = getSupabaseForUser(access_token);
   // Get user id from JWT
-  const { data: userData, error: userError } =
-    await supabaseUser.auth.getUser();
+  const { data: userData, error: userError } = await supabaseUser.auth.getUser();
   if (userError || !userData.user) {
-    logError("GET /api/application", userError);
+    logError('GET /api/application', userError);
     return handleCORS(
       request,
-      NextResponse.json(
-        { error: "Failed to get user from access token" },
-        { status: 401 }
-      )
+      NextResponse.json({ error: 'Failed to get user from access token' }, { status: 401 })
     );
   }
   const user_id = userData.user.id;
 
   // Build query with search functionality
-  let query = supabaseUser
-    .from("application")
-    .select("*")
-    .eq("user_id", user_id);
+  let query = supabaseUser.from('application').select('*').eq('user_id', user_id);
 
   // Add search filters if search query is provided
   if (searchQuery && searchQuery.trim()) {
     const trimmedQuery = searchQuery.trim();
-    query = query.or(
-      `company_name.ilike.%${trimmedQuery}%,position.ilike.%${trimmedQuery}%`
-    );
+    query = query.or(`company_name.ilike.%${trimmedQuery}%,position.ilike.%${trimmedQuery}%`);
   }
 
   const { data, error } = await query;
 
   if (error) {
-    logError("GET /api/application", error);
-    return handleCORS(
-      request,
-      NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      )
-    );
+    logError('GET /api/application', error);
+    return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
   }
   return handleCORS(request, NextResponse.json(data));
 }
@@ -219,16 +162,12 @@ export async function PUT(request: NextRequest) {
   const access_token = getAccessToken(request);
 
   if (!access_token) {
-    logError(
-      "PUT /api/application",
-      "Unauthorized: No Supabase access token"
-    );
+    logError('PUT /api/application', 'Unauthorized: No Supabase access token');
     return handleCORS(
       request,
       NextResponse.json(
         {
-          error:
-            "Unauthorized: Invalid or missing authentication.",
+          error: 'Unauthorized: Invalid or missing authentication.',
         },
         { status: 401 }
       )
@@ -236,40 +175,25 @@ export async function PUT(request: NextRequest) {
   }
   const supabaseUser = getSupabaseForUser(access_token);
   const body = await request.json();
-  const {
-    id,
-    company_name,
-    url,
-    status,
-    position,
-    priority_level,
-    notes,
-  } = body;
+  const { id, company_name, url, status, position, priority_level, notes } = body;
   if (!id) {
     return handleCORS(
       request,
-      NextResponse.json(
-        { error: "Missing application id" },
-        { status: 400 }
-      )
+      NextResponse.json({ error: 'Missing application id' }, { status: 400 })
     );
   }
   // Get user id from JWT
-  const { data: userData, error: userError } =
-    await supabaseUser.auth.getUser();
+  const { data: userData, error: userError } = await supabaseUser.auth.getUser();
   if (userError || !userData.user) {
-    logError("PUT /api/application", userError);
+    logError('PUT /api/application', userError);
     return handleCORS(
       request,
-      NextResponse.json(
-        { error: "Failed to get user from access token" },
-        { status: 401 }
-      )
+      NextResponse.json({ error: 'Failed to get user from access token' }, { status: 401 })
     );
   }
   const user_id = userData.user.id;
   const { data, error } = await supabaseUser
-    .from("application")
+    .from('application')
     .update({
       company_name,
       url,
@@ -278,18 +202,12 @@ export async function PUT(request: NextRequest) {
       priority_level,
       notes,
     })
-    .eq("id", id)
-    .eq("user_id", user_id)
+    .eq('id', id)
+    .eq('user_id', user_id)
     .select();
   if (error) {
-    logError("PUT /api/application", error);
-    return handleCORS(
-      request,
-      NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      )
-    );
+    logError('PUT /api/application', error);
+    return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
   }
   return handleCORS(request, NextResponse.json(data[0]));
 }
@@ -299,16 +217,12 @@ export async function DELETE(request: NextRequest) {
   const access_token = getAccessToken(request);
 
   if (!access_token) {
-    logError(
-      "DELETE /api/application",
-      "Unauthorized: No Supabase access token"
-    );
+    logError('DELETE /api/application', 'Unauthorized: No Supabase access token');
     return handleCORS(
       request,
       NextResponse.json(
         {
-          error:
-            "Unauthorized: Invalid or missing authentication.",
+          error: 'Unauthorized: Invalid or missing authentication.',
         },
         { status: 401 }
       )
@@ -320,43 +234,27 @@ export async function DELETE(request: NextRequest) {
   if (!id) {
     return handleCORS(
       request,
-      NextResponse.json(
-        { error: "Missing application id" },
-        { status: 400 }
-      )
+      NextResponse.json({ error: 'Missing application id' }, { status: 400 })
     );
   }
   // Get user id from JWT
-  const { data: userData, error: userError } =
-    await supabaseUser.auth.getUser();
+  const { data: userData, error: userError } = await supabaseUser.auth.getUser();
   if (userError || !userData.user) {
-    logError("DELETE /api/application", userError);
+    logError('DELETE /api/application', userError);
     return handleCORS(
       request,
-      NextResponse.json(
-        { error: "Failed to get user from access token" },
-        { status: 401 }
-      )
+      NextResponse.json({ error: 'Failed to get user from access token' }, { status: 401 })
     );
   }
   const user_id = userData.user.id;
   const { error } = await supabaseUser
-    .from("application")
+    .from('application')
     .delete()
-    .eq("id", id)
-    .eq("user_id", user_id);
+    .eq('id', id)
+    .eq('user_id', user_id);
   if (error) {
-    logError("DELETE /api/application", error);
-    return handleCORS(
-      request,
-      NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      )
-    );
+    logError('DELETE /api/application', error);
+    return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
   }
-  return handleCORS(
-    request,
-    NextResponse.json({ success: true })
-  );
+  return handleCORS(request, NextResponse.json({ success: true }));
 }

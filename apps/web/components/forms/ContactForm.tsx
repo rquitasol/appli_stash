@@ -1,9 +1,9 @@
-"use client";
-import React, { useState } from "react";
-import { Button } from "@shared/components/ui/Button";
-import { Input } from "@shared/components/ui/Input";
-import { TextArea } from "@shared/components/ui/TextArea";
-import { Alert, AlertDescription } from "@shared/components/ui/Alert";
+'use client';
+import React, { useState } from 'react';
+import { Button } from '@shared/components/ui/Button';
+import { Input } from '@shared/components/ui/Input';
+import { TextArea } from '@shared/components/ui/TextArea';
+import { Alert, AlertDescription } from '@shared/components/ui/Alert';
 
 export interface Contact {
   id?: string;
@@ -16,14 +16,14 @@ export interface Contact {
   notes: string;
 }
 
-const defaultForm: Omit<Contact, "id"> = {
-  name: "",
-  title: "",
-  email: "",
-  phone: "",
-  company: "",
-  url: "",
-  notes: "",
+const defaultForm: Omit<Contact, 'id'> = {
+  name: '',
+  title: '',
+  email: '',
+  phone: '',
+  company: '',
+  url: '',
+  notes: '',
 };
 
 interface ContactFormProps {
@@ -32,13 +32,13 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ initial, onSuccess }: ContactFormProps) {
-  const [form, setForm] = useState<Omit<Contact, "id">>({
+  const [form, setForm] = useState<Omit<Contact, 'id'>>({
     ...defaultForm,
     ...initial,
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -48,22 +48,20 @@ export function ContactForm({ initial, onSuccess }: ContactFormProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
     setIsLoading(true);
 
     try {
-      const method = initial?.id ? "PUT" : "POST";
-      const url = "/api/contact";
-      
-      const body = initial?.id 
-        ? { ...form, id: initial.id }
-        : form;
+      const method = initial?.id ? 'PUT' : 'POST';
+      const url = '/api/contact';
+
+      const body = initial?.id ? { ...form, id: initial.id } : form;
 
       const response = await fetch(url, {
         method,
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       });
@@ -71,12 +69,12 @@ export function ContactForm({ initial, onSuccess }: ContactFormProps) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to save contact");
+        throw new Error(data.error || 'Failed to save contact');
       }
 
-      setSuccess(initial?.id ? "Contact updated successfully!" : "Contact created successfully!");
+      setSuccess(initial?.id ? 'Contact updated successfully!' : 'Contact created successfully!');
       setShowSuccess(true);
-      
+
       // Reset form if creating new contact
       if (!initial?.id) {
         setForm(defaultForm);
@@ -94,9 +92,8 @@ export function ContactForm({ initial, onSuccess }: ContactFormProps) {
       setTimeout(() => {
         setShowSuccess(false);
       }, 3000);
-
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -106,17 +103,13 @@ export function ContactForm({ initial, onSuccess }: ContactFormProps) {
     <form onSubmit={handleSubmit} className="space-y-4">
       {showSuccess && success && (
         <Alert type="success">
-          <AlertDescription>
-            {success}
-          </AlertDescription>
+          <AlertDescription>{success}</AlertDescription>
         </Alert>
       )}
-      
+
       {error && (
         <Alert type="error">
-          <AlertDescription>
-            {error}
-          </AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
@@ -200,7 +193,7 @@ export function ContactForm({ initial, onSuccess }: ContactFormProps) {
 
       <div className="flex justify-center mt-4">
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? "Saving..." : initial?.id ? "Update Contact" : "Add Contact"}
+          {isLoading ? 'Saving...' : initial?.id ? 'Update Contact' : 'Add Contact'}
         </Button>
       </div>
     </form>

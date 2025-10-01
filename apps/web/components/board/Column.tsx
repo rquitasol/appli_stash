@@ -1,7 +1,7 @@
-import React from "react";
-import { Application, ApplicationStatus } from "@shared/types";
-import { ApplicationItem } from "./ApplicationItem";
-import { Droppable } from "@hello-pangea/dnd";
+import React from 'react';
+import { Application, ApplicationStatus } from '@shared/types';
+import { ApplicationItem } from './ApplicationItem';
+import { Droppable } from '@hello-pangea/dnd';
 
 const statusColors: Record<string, string> = {
   Saved: '#7C3AED',
@@ -26,9 +26,13 @@ export function Column({ status, items, itemCount = 0, onItemClick }: ColumnProp
         style={{ background: statusColors[status], color: '#fff' }}
       >
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-bold uppercase" style={{ color: '#fff' }}>{status}</h3>
+          <h3 className="text-lg font-bold uppercase" style={{ color: '#fff' }}>
+            {status}
+          </h3>
         </div>
-        <span className="text-xs font-semibold" style={{ color: '#fff' }}>{itemCount} JOBS</span>
+        <span className="text-xs font-semibold" style={{ color: '#fff' }}>
+          {itemCount} JOBS
+        </span>
       </div>
 
       {/* Add button for adding new applications */}
@@ -49,8 +53,8 @@ export function Column({ status, items, itemCount = 0, onItemClick }: ColumnProp
               addButton.click();
             }
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = statusColors[status] + '22')}
-          onMouseLeave={e => (e.currentTarget.style.background = '')}
+          onMouseEnter={(e) => (e.currentTarget.style.background = statusColors[status] + '22')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = '')}
         >
           <span className="text-2xl">+</span>
         </button>
@@ -63,7 +67,11 @@ export function Column({ status, items, itemCount = 0, onItemClick }: ColumnProp
               ref={provided.innerRef}
               {...provided.droppableProps}
               className={`space-y-5 min-h-[100px] transition-colors`}
-              style={snapshot.isDraggingOver ? { background: statusColors[status] + '22', borderRadius: 8, padding: 8 } : {}}
+              style={
+                snapshot.isDraggingOver
+                  ? { background: statusColors[status] + '22', borderRadius: 8, padding: 8 }
+                  : {}
+              }
             >
               {items.length === 0 ? (
                 <div className="text-secondary text-sm text-center mt-4">No applications</div>

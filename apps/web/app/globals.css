@@ -1,26 +1,26 @@
 @import 'tailwindcss';
 
 @theme {
-	--font-display: "Futura", Arial, Helvetica, sans-serif;
-	--breakpoint-3xl: 1920px;
-	--color-primary: #8B5CF6;
-	--color-secondary: #581C87;
-	--color-accent: #FAF5FF;
-	--color-neutral: #454545;
-	--background: #ffffff;
-	--foreground: #171717;
+  --font-display: 'Futura', Arial, Helvetica, sans-serif;
+  --breakpoint-3xl: 1920px;
+  --color-primary: #8b5cf6;
+  --color-secondary: #581c87;
+  --color-accent: #faf5ff;
+  --color-neutral: #454545;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 /* Override dark mode - always use light mode */
 @media (prefers-color-scheme: dark) {
-	@theme {
-		--background: #ffffff;
-		--foreground: #171717;
-	}
+  @theme {
+    --background: #ffffff;
+    --foreground: #171717;
+  }
 }
 
 body {
-	background: var(--background);
-	color: var(--foreground);
-	font-family: var(--font-display);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-display);
 }

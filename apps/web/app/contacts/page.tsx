@@ -1,24 +1,19 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { useUser } from "../../components/context/UserContext";
-import { Modal } from "@shared/components/ui/Modal";
-import { ContactForm } from "../../components/forms/ContactForm";
-import {
-  ContactItem,
-  Contact,
-} from "../../components/contacts/ContactItem";
-import { MainLayout } from "../../components/layout/MainLayout";
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useUser } from '../../components/context/UserContext';
+import { Modal } from '@shared/components/ui/Modal';
+import { ContactForm } from '../../components/forms/ContactForm';
+import { ContactItem, Contact } from '../../components/contacts/ContactItem';
+import { MainLayout } from '../../components/layout/MainLayout';
 
 export default function ContactsPage() {
   const { user, loading } = useUser();
   const [contacts, setContacts] = useState<Contact[]>([]);
-  const [contactLoading, setContactLoading] =
-    useState(true);
-  const [contactError, setContactError] = useState("");
+  const [contactLoading, setContactLoading] = useState(true);
+  const [contactError, setContactError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const [editContact, setEditContact] =
-    useState<Contact | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [editContact, setEditContact] = useState<Contact | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
 
   useEffect(() => {
@@ -26,7 +21,7 @@ export default function ContactsPage() {
     fetchContacts();
   }, [user]);
 
-  const fetchContacts = (search = "") => {
+  const fetchContacts = (search = '') => {
     const isSearch = search.trim().length > 0;
     if (isSearch) {
       setSearchLoading(true);
@@ -35,31 +30,25 @@ export default function ContactsPage() {
     }
 
     const url = search.trim()
-      ? `/api/contact?search=${encodeURIComponent(
-          search.trim()
-        )}`
-      : "/api/contact";
+      ? `/api/contact?search=${encodeURIComponent(search.trim())}`
+      : '/api/contact';
 
     fetch(url, {
-      credentials: "include",
+      credentials: 'include',
     })
       .then(async (res) => {
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(
-            data.error || "Failed to fetch contacts"
-          );
+          throw new Error(data.error || 'Failed to fetch contacts');
         }
         return res.json();
       })
       .then((data) => {
         setContacts(data || []);
-        setContactError("");
+        setContactError('');
       })
       .catch((err) => {
-        setContactError(
-          err.message || "Failed to fetch contacts"
-        );
+        setContactError(err.message || 'Failed to fetch contacts');
       })
       .finally(() => {
         if (isSearch) {
@@ -80,54 +69,36 @@ export default function ContactsPage() {
   };
 
   const handleClearSearch = () => {
-    setSearchQuery("");
+    setSearchQuery('');
     fetchContacts();
   };
 
   const handleDeleteContact = async (contactId: string) => {
-    if (
-      !contactId ||
-      !confirm(
-        "Are you sure you want to delete this contact?"
-      )
-    ) {
+    if (!contactId || !confirm('Are you sure you want to delete this contact?')) {
       return;
     }
 
     try {
-      const response = await fetch(
-        `/api/contact?id=${contactId}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`/api/contact?id=${contactId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
 
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(
-          data.error || "Failed to delete contact"
-        );
+        throw new Error(data.error || 'Failed to delete contact');
       }
 
       // Refresh contacts list
       fetchContacts();
       setEditContact(null);
     } catch (err) {
-      alert(
-        err instanceof Error
-          ? err.message
-          : "Failed to delete contact"
-      );
+      alert(err instanceof Error ? err.message : 'Failed to delete contact');
     }
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        Loading...
-      </div>
-    );
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   return (
@@ -137,27 +108,19 @@ export default function ContactsPage() {
           {/* Header Section */}
           <div className="flex justify-between items-center mb-6 flex-wrap">
             <div>
-              <h1 className="text-2xl font-bold text-[#581C87] mb-2">
-                Contacts
-              </h1>
+              <h1 className="text-2xl font-bold text-[#581C87] mb-2">Contacts</h1>
               <p className="text-gray-600">
-                Manage your professional network and job
-                search contacts
+                Manage your professional network and job search contacts
               </p>
             </div>
             <div className="flex gap-3 flex-wrap">
               {/* Search Box */}
-              <form
-                onSubmit={handleSearchSubmit}
-                className="relative"
-              >
+              <form onSubmit={handleSearchSubmit} className="relative">
                 <div className="flex">
                   <input
                     type="text"
                     value={searchQuery}
-                    onChange={(e) =>
-                      setSearchQuery(e.target.value)
-                    }
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search by name, email, or company..."
                     className="w-64 px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   />
@@ -226,7 +189,7 @@ export default function ContactsPage() {
                 {contacts.length === 0
                   ? `No contacts found for "${searchQuery}"`
                   : `Found ${contacts.length} contact${
-                      contacts.length === 1 ? "" : "s"
+                      contacts.length === 1 ? '' : 's'
                     } for "${searchQuery}"`}
                 {contacts.length > 0 && (
                   <button
@@ -244,28 +207,20 @@ export default function ContactsPage() {
           <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-[#10B981]">
-                  {contacts.length}
-                </div>
-                <div className="text-sm text-gray-600">
-                  Total Contacts
-                </div>
+                <div className="text-2xl font-bold text-[#10B981]">{contacts.length}</div>
+                <div className="text-sm text-gray-600">Total Contacts</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-[#3B82F6]">
                   {contacts.filter((c) => c.company).length}
                 </div>
-                <div className="text-sm text-gray-600">
-                  Companies
-                </div>
+                <div className="text-sm text-gray-600">Companies</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-[#8B5CF6]">
                   {contacts.filter((c) => c.url).length}
                 </div>
-                <div className="text-sm text-gray-600">
-                  With LinkedIn
-                </div>
+                <div className="text-sm text-gray-600">With LinkedIn</div>
               </div>
             </div>
           </div>
@@ -294,12 +249,9 @@ export default function ContactsPage() {
                   d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                 />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No contacts yet
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No contacts yet</h3>
               <p className="text-gray-600 mb-4">
-                Start building your professional network by
-                adding your first contact
+                Start building your professional network by adding your first contact
               </p>
               <button
                 className="px-4 py-2 bg-[#10B981] text-white rounded-lg hover:bg-[#059669]"
@@ -322,11 +274,7 @@ export default function ContactsPage() {
         </div>
 
         {/* Add Contact Modal */}
-        <Modal
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          title="Add New Contact"
-        >
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add New Contact">
           <ContactForm
             onSuccess={() => {
               setModalOpen(false);
@@ -336,11 +284,7 @@ export default function ContactsPage() {
         </Modal>
 
         {/* Edit Contact Modal */}
-        <Modal
-          isOpen={!!editContact}
-          onClose={() => setEditContact(null)}
-          title="Contact Details"
-        >
+        <Modal isOpen={!!editContact} onClose={() => setEditContact(null)} title="Contact Details">
           {editContact && (
             <div className="space-y-4">
               {/* Contact Information Display */}
@@ -348,57 +292,39 @@ export default function ContactsPage() {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[#6366F1] flex items-center justify-center text-white font-bold">
                     {editContact.name
-                      .split(" ")
+                      .split(' ')
                       .map((name) => name.charAt(0))
-                      .join("")
+                      .join('')
                       .toUpperCase()
                       .slice(0, 2)}
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {editContact.name}
-                    </h3>
-                    <p className="text-gray-600">
-                      {editContact.title}
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900">{editContact.name}</h3>
+                    <p className="text-gray-600">{editContact.title}</p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <div>
-                    <span className="font-medium text-gray-700">
-                      Company:
-                    </span>
-                    <span className="ml-2 text-gray-900">
-                      {editContact.company}
-                    </span>
+                    <span className="font-medium text-gray-700">Company:</span>
+                    <span className="ml-2 text-gray-900">{editContact.company}</span>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700">
-                      Email:
-                    </span>
-                    <span className="ml-2 text-gray-900">
-                      {editContact.email}
-                    </span>
+                    <span className="font-medium text-gray-700">Email:</span>
+                    <span className="ml-2 text-gray-900">{editContact.email}</span>
                   </div>
                   {editContact.phone && (
                     <div>
-                      <span className="font-medium text-gray-700">
-                        Phone:
-                      </span>
-                      <span className="ml-2 text-gray-900">
-                        {editContact.phone}
-                      </span>
+                      <span className="font-medium text-gray-700">Phone:</span>
+                      <span className="ml-2 text-gray-900">{editContact.phone}</span>
                     </div>
                   )}
                   {editContact.url && (
                     <div>
-                      <span className="font-medium text-gray-700">
-                        LinkedIn/Website:
-                      </span>
+                      <span className="font-medium text-gray-700">LinkedIn/Website:</span>
                       <a
                         href={
-                          editContact.url.startsWith("http")
+                          editContact.url.startsWith('http')
                             ? editContact.url
                             : `https://${editContact.url}`
                         }
@@ -412,12 +338,8 @@ export default function ContactsPage() {
                   )}
                   {editContact.notes && (
                     <div>
-                      <span className="font-medium text-gray-700">
-                        Notes:
-                      </span>
-                      <p className="mt-1 text-gray-900">
-                        {editContact.notes}
-                      </p>
+                      <span className="font-medium text-gray-700">Notes:</span>
+                      <p className="mt-1 text-gray-900">{editContact.notes}</p>
                     </div>
                   )}
                 </div>
@@ -437,10 +359,7 @@ export default function ContactsPage() {
                 </button>
                 <button
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                  onClick={() =>
-                    editContact.id &&
-                    handleDeleteContact(editContact.id)
-                  }
+                  onClick={() => editContact.id && handleDeleteContact(editContact.id)}
                 >
                   Delete
                 </button>
