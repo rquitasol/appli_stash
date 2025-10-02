@@ -284,87 +284,18 @@ export default function ContactsPage() {
         </Modal>
 
         {/* Edit Contact Modal */}
-        <Modal isOpen={!!editContact} onClose={() => setEditContact(null)} title="Contact Details">
+        <Modal isOpen={!!editContact} onClose={() => setEditContact(null)} title="Edit Contact">
           {editContact && (
-            <div className="space-y-4">
-              {/* Contact Information Display */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-[#6366F1] flex items-center justify-center text-white font-bold">
-                    {editContact.name
-                      .split(' ')
-                      .map((name) => name.charAt(0))
-                      .join('')
-                      .toUpperCase()
-                      .slice(0, 2)}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{editContact.name}</h3>
-                    <p className="text-gray-600">{editContact.title}</p>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <div>
-                    <span className="font-medium text-gray-700">Company:</span>
-                    <span className="ml-2 text-gray-900">{editContact.company}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-gray-700">Email:</span>
-                    <span className="ml-2 text-gray-900">{editContact.email}</span>
-                  </div>
-                  {editContact.phone && (
-                    <div>
-                      <span className="font-medium text-gray-700">Phone:</span>
-                      <span className="ml-2 text-gray-900">{editContact.phone}</span>
-                    </div>
-                  )}
-                  {editContact.url && (
-                    <div>
-                      <span className="font-medium text-gray-700">LinkedIn/Website:</span>
-                      <a
-                        href={
-                          editContact.url.startsWith('http')
-                            ? editContact.url
-                            : `https://${editContact.url}`
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ml-2 text-blue-600 hover:text-blue-800 underline"
-                      >
-                        {editContact.url}
-                      </a>
-                    </div>
-                  )}
-                  {editContact.notes && (
-                    <div>
-                      <span className="font-medium text-gray-700">Notes:</span>
-                      <p className="mt-1 text-gray-900">{editContact.notes}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <button
-                  className="flex-1 px-4 py-2 bg-[#3B82F6] text-white rounded-lg hover:bg-[#2563EB]"
-                  onClick={() => {
-                    setEditContact(null);
-                    // Here you could implement edit functionality
-                    // For now, we'll just close the modal
-                  }}
-                >
-                  Edit Contact
-                </button>
-                <button
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                  onClick={() => editContact.id && handleDeleteContact(editContact.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
+            <ContactForm
+              initial={editContact}
+              onSuccess={() => {
+                setEditContact(null);
+                fetchContacts();
+              }}
+              onCancel={() => setEditContact(null)}
+              onDelete={() => editContact.id && handleDeleteContact(editContact.id)}
+              showDeleteButton={true}
+            />
           )}
         </Modal>
       </div>

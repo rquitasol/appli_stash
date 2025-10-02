@@ -29,9 +29,12 @@ const defaultForm: Omit<Contact, 'id'> = {
 interface ContactFormProps {
   initial?: Partial<Contact>;
   onSuccess?: () => void;
+  onCancel?: () => void;
+  onDelete?: () => void;
+  showDeleteButton?: boolean;
 }
 
-export function ContactForm({ initial, onSuccess }: ContactFormProps) {
+export function ContactForm({ initial, onSuccess, onCancel, onDelete, showDeleteButton }: ContactFormProps) {
   const [form, setForm] = useState<Omit<Contact, 'id'>>({
     ...defaultForm,
     ...initial,
@@ -191,10 +194,30 @@ export function ContactForm({ initial, onSuccess }: ContactFormProps) {
         placeholder="Additional notes about this contact..."
       />
 
-      <div className="flex justify-center mt-4">
-        <Button type="submit" disabled={isLoading} className="w-full">
+      <div className="flex gap-2 mt-4">
+        {onCancel && (
+          <Button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 bg-gray-500 hover:bg-gray-600 border-gray-500"
+            disabled={isLoading}
+          >
+            Cancel
+          </Button>
+        )}
+        <Button type="submit" disabled={isLoading} className="flex-1">
           {isLoading ? 'Saving...' : initial?.id ? 'Update Contact' : 'Add Contact'}
         </Button>
+        {showDeleteButton && onDelete && initial?.id && (
+          <Button
+            type="button"
+            onClick={onDelete}
+            disabled={isLoading}
+            className="px-6 bg-red-600 hover:bg-red-700 border-red-600"
+          >
+            Delete
+          </Button>
+        )}
       </div>
     </form>
   );
