@@ -16,9 +16,10 @@ interface ColumnProps {
   items: Application[];
   itemCount?: number;
   onItemClick?: (application: Application) => void;
+  onDelete?: (application: Application) => void;
 }
 
-export function Column({ status, items, itemCount = 0, onItemClick }: ColumnProps) {
+export function Column({ status, items, itemCount = 0, onItemClick, onDelete }: ColumnProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm mb-4 md:mb-0 md:min-w-[300px] w-full md:flex-1 border border-gray-200 flex-shrink-0">
       <div
@@ -81,6 +82,7 @@ export function Column({ status, items, itemCount = 0, onItemClick }: ColumnProp
                     key={app.id || app.company_name}
                     application={app}
                     onClick={onItemClick}
+                    onDelete={onDelete}
                     index={index}
                   />
                 ))

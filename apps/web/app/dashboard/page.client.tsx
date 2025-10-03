@@ -72,6 +72,42 @@ export default function DashboardPage() {
     loadApplications(searchQuery);
   };
 
+  const handleDeleteApplication = async (application: Application) => {
+    if (!application.id) {
+      console.error('Cannot delete application without ID');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/application', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ id: application.id }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete application');
+      }
+
+      // Remove the deleted application from the local state immediately
+      setApplications((prev) => prev.filter((app) => app.id !== application.id));
+
+      // Also close edit modal if this application was being edited
+      if (editApp && editApp.id === application.id) {
+        setEditApp(null);
+      }
+    } catch (error) {
+      console.error('Delete failed:', error);
+      alert(
+        `Failed to delete application: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
@@ -186,7 +222,11 @@ export default function DashboardPage() {
             {appError}
           </div>
         ) : (
-          <Board applications={applications} onItemClick={setEditApp} />
+          <Board
+            applications={applications}
+            onItemClick={setEditApp}
+            onDelete={handleDeleteApplication}
+          />
         )}
 
         <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Add Application">

@@ -6,9 +6,10 @@ import { DragDropContext, DropResult } from '@hello-pangea/dnd';
 interface BoardProps {
   applications: Application[];
   onItemClick?: (application: Application) => void;
+  onDelete?: (application: Application) => void;
 }
 
-export function Board({ applications, onItemClick }: BoardProps) {
+export function Board({ applications, onItemClick, onDelete }: BoardProps) {
   // State to keep track of applications locally
   const [localApplications, setLocalApplications] = useState<Application[]>(applications);
 
@@ -105,6 +106,7 @@ export function Board({ applications, onItemClick }: BoardProps) {
             items={col.items}
             itemCount={col.items.length}
             {...(onItemClick ? { onItemClick } : {})}
+            {...(onDelete ? { onDelete } : {})}
           />
         ))}
       </div>
