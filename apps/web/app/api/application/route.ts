@@ -247,6 +247,26 @@ export async function DELETE(request: NextRequest) {
     );
   }
   const user_id = userData.user.id;
+
+  // First, delete all interviews related to this application (cascade delete)
+  const { error: interviewDeleteError } = await supabaseUser
+    .from('interview')
+    .delete()
+    .eq('application_id', id)
+    .eq('user_id', user_id);
+
+  if (interviewDeleteError) {
+    logError('DELETE /api/application - cascade delete interviews', interviewDeleteError);
+    return handleCORS(
+      request,
+      NextResponse.json(
+        { error: 'Failed to delete related interviews: ' + interviewDeleteError.message },
+        { status: 500 }
+      )
+    );
+  }
+
+  // Then delete the application
   const { error } = await supabaseUser
     .from('application')
     .delete()
@@ -256,5 +276,11 @@ export async function DELETE(request: NextRequest) {
     logError('DELETE /api/application', error);
     return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
   }
-  return handleCORS(request, NextResponse.json({ success: true }));
+  return handleCORS(
+    request,
+    NextResponse.json({
+      success: true,
+      message: 'Application and related interviews deleted successfully',
+    })
+  );
 }

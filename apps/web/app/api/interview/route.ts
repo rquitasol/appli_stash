@@ -257,6 +257,9 @@ export async function PUT(request: NextRequest) {
 }
 
 // DELETE
+// Supports two deletion modes:
+// 1. Delete by interview ID: ?id=123
+// 2. Delete by application ID (cascade): ?application_id=456
 export async function DELETE(request: NextRequest) {
   const access_token = getAccessToken(request);
 
@@ -276,11 +279,16 @@ export async function DELETE(request: NextRequest) {
   const supabaseUser = getSupabaseForUser(access_token);
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
+  const application_id = searchParams.get('application_id');
 
-  if (!id) {
+  // Check if either id or application_id is provided
+  if (!id && !application_id) {
     return handleCORS(
       request,
-      NextResponse.json({ error: 'Interview ID is required for deletion' }, { status: 400 })
+      NextResponse.json(
+        { error: 'Either Interview ID or Application ID is required for deletion' },
+        { status: 400 }
+      )
     );
   }
 
@@ -296,13 +304,30 @@ export async function DELETE(request: NextRequest) {
 
   const user_id = userData.user.id;
 
-  // Delete the interview, ensuring it belongs to the authenticated user
-  const { data, error } = await supabaseUser
-    .from('interview')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user_id) // Ensure user can only delete their own interviews
-    .select();
+  let data, error;
+
+  // Delete interviews based on the parameter provided
+  if (id) {
+    // Delete by interview ID
+    const result = await supabaseUser
+      .from('interview')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user_id)
+      .select();
+    data = result.data;
+    error = result.error;
+  } else if (application_id) {
+    // Delete by application ID (cascade delete)
+    const result = await supabaseUser
+      .from('interview')
+      .delete()
+      .eq('application_id', application_id)
+      .eq('user_id', user_id)
+      .select();
+    data = result.data;
+    error = result.error;
+  }
 
   if (error) {
     logError('DELETE /api/interview', error);
@@ -310,14 +335,24 @@ export async function DELETE(request: NextRequest) {
   }
 
   if (!data || data.length === 0) {
-    return handleCORS(
-      request,
-      NextResponse.json({ error: 'Interview not found or access denied' }, { status: 404 })
-    );
+    const notFoundMessage = id
+      ? 'Interview not found or access denied'
+      : 'No interviews found for this application or access denied';
+    return handleCORS(request, NextResponse.json({ error: notFoundMessage }, { status: 404 }));
   }
+
+  const successMessage = id
+    ? 'Interview deleted successfully'
+    : `${data.length} interview(s) deleted successfully`;
 
   return handleCORS(
     request,
-    NextResponse.json({ message: 'Interview deleted successfully' }, { status: 200 })
+    NextResponse.json(
+      {
+        message: successMessage,
+        deletedCount: data.length,
+      },
+      { status: 200 }
+    )
   );
 }
