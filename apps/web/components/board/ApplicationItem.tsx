@@ -98,9 +98,10 @@ export function ApplicationItem({ application, onClick, onDelete, index }: Appli
                 {onDelete && (
                   <button
                     onClick={handleDeleteClick}
-                    className="w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-200 z-10"
+                    className="w-5 h-5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-200"
                     aria-label={`Delete application for ${application.company_name}`}
                     title="Delete application"
+                    style={{ zIndex: 1 }} // Low z-index to stay below modals
                   >
                     ×
                   </button>
