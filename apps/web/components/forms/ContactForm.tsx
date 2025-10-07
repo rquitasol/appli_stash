@@ -34,7 +34,13 @@ interface ContactFormProps {
   showDeleteButton?: boolean;
 }
 
-export function ContactForm({ initial, onSuccess, onCancel, onDelete, showDeleteButton }: ContactFormProps) {
+export function ContactForm({
+  initial,
+  onSuccess,
+  onCancel,
+  onDelete,
+  showDeleteButton,
+}: ContactFormProps) {
   const [form, setForm] = useState<Omit<Contact, 'id'>>({
     ...defaultForm,
     ...initial,
@@ -206,7 +212,7 @@ export function ContactForm({ initial, onSuccess, onCancel, onDelete, showDelete
           </Button>
         )}
         <Button type="submit" disabled={isLoading} className="flex-1">
-          {isLoading ? 'Saving...' : initial?.id ? 'Update Contact' : 'Add Contact'}
+          {isLoading ? 'Saving...' : initial?.id ? 'Update' : 'Save'}
         </Button>
         {showDeleteButton && onDelete && initial?.id && (
           <Button

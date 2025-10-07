@@ -270,6 +270,14 @@ export default function DashboardPage() {
                 setEditApp(null);
                 refreshApplications();
               }}
+              onCancel={() => {
+                setEditApp(null);
+              }}
+              onDelete={() => {
+                setEditApp(null);
+                refreshApplications();
+              }}
+              showDeleteButton={true}
             />
           )}
         </Modal>

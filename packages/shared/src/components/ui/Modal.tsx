@@ -65,7 +65,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 p-4"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4"
       style={{
         position: 'fixed',
         top: 0,
@@ -73,6 +73,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         right: 0,
         bottom: 0,
         backdropFilter: 'blur(2px)',
+        zIndex: 99999, // Much higher z-index to ensure it's above everything
       }}
       onClick={handleBackdropClick}
       aria-modal="true"
@@ -84,7 +85,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         className="bg-white rounded-lg shadow-2xl w-auto max-w-md mx-auto relative overflow-hidden flex flex-col"
         style={{
           boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
-          zIndex: 10000,
+          zIndex: 100000, // Ensure modal content is above backdrop
           borderRadius: '8px',
           maxHeight: '90vh',
         }}
@@ -97,11 +98,12 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             borderTopLeftRadius: '8px',
             borderTopRightRadius: '8px',
             padding: '10px',
+            zIndex: 100001, // Ensure header is above content
           }}
         >
           {title && (
-            <div className="flex items-center justify-between ">
-              <h2 className="text-3xl font-bold text-white ml-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-3xl font-bold text-white ml-4 pr-12">
                 {title.includes('Application')
                   ? title.split('Application').map((part, i) =>
                       i === 0 ? (
@@ -116,10 +118,13 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
                   : title}
               </h2>
               <button
-                className="text-white hover:text-gray-200 ml-4"
+                className="text-white hover:text-gray-200 absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
                 onClick={onClose}
-                aria-label="Close"
-                style={{ fontSize: '24px' }}
+                aria-label="Close modal"
+                style={{
+                  fontSize: '24px',
+                  zIndex: 100002, // Ensure button is above everything
+                }}
               >
                 ×
               </button>

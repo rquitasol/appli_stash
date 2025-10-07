@@ -19,9 +19,18 @@ const defaultForm: Omit<Application, 'id' | 'user_id'> = {
 interface ApplicationFormProps {
   initial?: Partial<Application>;
   onSuccess?: () => void;
+  onCancel?: () => void;
+  onDelete?: () => void;
+  showDeleteButton?: boolean;
 }
 
-export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
+export function ApplicationForm({
+  initial,
+  onSuccess,
+  onCancel,
+  onDelete,
+  showDeleteButton,
+}: ApplicationFormProps) {
   const [form, setForm] = useState<Omit<Application, 'id' | 'user_id'>>({
     ...defaultForm,
     ...initial,
@@ -30,6 +39,21 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Track form changes
+  const initialFormState = {
+    ...defaultForm,
+    ...initial,
+  };
+
+  useEffect(() => {
+    const formChanged = Object.keys(form).some(
+      (key) =>
+        form[key as keyof typeof form] !== initialFormState[key as keyof typeof initialFormState]
+    );
+    setHasChanges(formChanged);
+  }, [form, initialFormState]);
 
   // Check for column-specific status on mount
   useEffect(() => {
@@ -59,19 +83,32 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
     setIsLoading(true);
     setError('');
     setSuccess('');
+
     try {
+      const method = initial?.id ? 'PUT' : 'POST';
+      const body = initial?.id ? { ...form, id: initial.id } : form;
+
       const res = await fetch('/api/application', {
-        method: 'POST',
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(body),
       });
+
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Failed to add application');
+        setError(data.error || `Failed to ${initial?.id ? 'update' : 'add'} application`);
       } else {
-        setSuccess('Application added successfully!');
+        const successMessage = initial?.id
+          ? 'Application updated successfully!'
+          : 'Application added successfully!';
+        setSuccess(successMessage);
         setShowSuccess(true);
-        setForm(defaultForm);
+
+        // Reset form if creating new application
+        if (!initial?.id) {
+          setForm(defaultForm);
+        }
+
         if (onSuccess) {
           setTimeout(() => {
             setShowSuccess(false);
@@ -83,6 +120,71 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
       setError('Network error. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!initial?.id) return;
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete the application for ${form.company_name}? This action cannot be undone and will also delete all related interviews.`
+    );
+
+    if (!confirmed) return;
+
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const res = await fetch('/api/application', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: initial.id }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Failed to delete application');
+      } else {
+        setSuccess('Application deleted successfully!');
+        setShowSuccess(true);
+
+        if (onDelete) {
+          setTimeout(() => {
+            setShowSuccess(false);
+            onDelete();
+          }, 1500);
+        }
+      }
+    } catch {
+      setError('Network error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  function handleCancel() {
+    // Check if there are unsaved changes
+    if (hasChanges) {
+      const confirmed = window.confirm(
+        'You have unsaved changes. Are you sure you want to cancel? All changes will be lost.'
+      );
+      if (!confirmed) return;
+    }
+
+    // Reset form to initial values
+    setForm({
+      ...defaultForm,
+      ...initial,
+    });
+    setError('');
+    setSuccess('');
+    setShowSuccess(false);
+    setHasChanges(false);
+
+    if (onCancel) {
+      onCancel();
     }
   }
 
@@ -166,9 +268,40 @@ export function ApplicationForm({ initial, onSuccess }: ApplicationFormProps) {
         rows={3}
         placeholder="Additional notes about this application, interview details, contacts, etc..."
       />
-      <div className="flex justify-center mt-4">
-        <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Saving...' : 'Save'}
+      <div className="flex flex-col sm:flex-row gap-3 mt-6">
+        {/* Cancel Button - Always show if onCancel is provided */}
+        {onCancel && (
+          <Button
+            type="button"
+            onClick={handleCancel}
+            disabled={isLoading}
+            className="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 border-gray-500"
+          >
+            Cancel
+          </Button>
+        )}
+
+        {/* Delete Button - Only show for existing applications */}
+        {initial?.id && showDeleteButton && (
+          <Button
+            type="button"
+            onClick={handleDelete}
+            disabled={isLoading}
+            className="w-full sm:w-auto bg-red-600 hover:bg-red-700 border-red-600 text-white"
+          >
+            {isLoading ? 'Deleting...' : 'Delete'}
+          </Button>
+        )}
+
+        {/* Submit Button - Save or Update */}
+        <Button type="submit" disabled={isLoading} className="w-full sm:flex-1">
+          {isLoading
+            ? initial?.id
+              ? 'Updating...'
+              : 'Saving...'
+            : initial?.id
+              ? 'Update'
+              : 'Save'}
         </Button>
       </div>
     </form>
