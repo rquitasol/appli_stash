@@ -12,6 +12,9 @@ export interface Interview {
   interviewer: string;
   status: string;
   notes: string;
+  // Additional fields populated from joined application table
+  company_name?: string;
+  position?: string;
 }
 
 // CREATE
@@ -107,14 +110,23 @@ export async function GET(request: NextRequest) {
 
     const supabaseUser = getSupabaseForUser(access_token);
 
-    // Build query with search functionality for admin use
-    let query = supabaseUser.from('interview').select('*').eq('user_id', userIdParam);
+    // Build query with search functionality for admin use and join with application table
+    let query = supabaseUser
+      .from('interview')
+      .select(`
+        *,
+        application:application_id (
+          company_name,
+          position
+        )
+      `)
+      .eq('user_id', userIdParam);
 
     // Add search filters if search query is provided
     if (searchQuery && searchQuery.trim()) {
       const trimmedQuery = searchQuery.trim();
       query = query.or(
-        `company_name.ilike.%${trimmedQuery}%,position.ilike.%${trimmedQuery}%,interviewer.ilike.%${trimmedQuery}%`
+        `interviewer.ilike.%${trimmedQuery}%,application.company_name.ilike.%${trimmedQuery}%,application.position.ilike.%${trimmedQuery}%`
       );
     }
 
@@ -124,7 +136,15 @@ export async function GET(request: NextRequest) {
       return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
     }
 
-    return handleCORS(request, NextResponse.json(data));
+    // Transform the data to flatten the application fields
+    const transformedData = data?.map(interview => ({
+      ...interview,
+      company_name: interview.application?.company_name || null,
+      position: interview.application?.position || null,
+      application: undefined // Remove the nested application object
+    })) || [];
+
+    return handleCORS(request, NextResponse.json(transformedData));
   }
 
   // Normal user request - get interviews for authenticated user
@@ -149,14 +169,23 @@ export async function GET(request: NextRequest) {
 
   const user_id = userData.user.id;
 
-  // Build query with search functionality
-  let query = supabaseUser.from('interview').select('*').eq('user_id', user_id);
+  // Build query with search functionality and join with application table
+  let query = supabaseUser
+    .from('interview')
+    .select(`
+      *,
+      application:application_id (
+        company_name,
+        position
+      )
+    `)
+    .eq('user_id', user_id);
 
   // Add search filters if search query is provided
   if (searchQuery && searchQuery.trim()) {
     const trimmedQuery = searchQuery.trim();
     query = query.or(
-      `company_name.ilike.%${trimmedQuery}%,position.ilike.%${trimmedQuery}%,interviewer.ilike.%${trimmedQuery}%`
+      `interviewer.ilike.%${trimmedQuery}%,application.company_name.ilike.%${trimmedQuery}%,application.position.ilike.%${trimmedQuery}%`
     );
   }
 
@@ -167,7 +196,15 @@ export async function GET(request: NextRequest) {
     return handleCORS(request, NextResponse.json({ error: error.message }, { status: 500 }));
   }
 
-  return handleCORS(request, NextResponse.json(data));
+  // Transform the data to flatten the application fields
+  const transformedData = data?.map(interview => ({
+    ...interview,
+    company_name: interview.application?.company_name || null,
+    position: interview.application?.position || null,
+    application: undefined // Remove the nested application object
+  })) || [];
+
+  return handleCORS(request, NextResponse.json(transformedData));
 }
 
 // UPDATE

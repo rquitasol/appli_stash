@@ -150,22 +150,38 @@ export function InterviewItem({ interview, onClick }: InterviewItemProps) {
       aria-label={`Interview with ${interview.interviewer} for ${interview.company_name || 'position'}`}
     >
       <div className="flex flex-col space-y-3">
-        {/* Header with company and status */}
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            {interview.company_name && (
-              <div className="text-sm text-gray-500">{interview.company_name}</div>
-            )}
-            {interview.position && (
-              <div className="font-semibold text-gray-900">{interview.position}</div>
-            )}
+        {/* Header with company name */}
+        {interview.company_name && (
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="text-lg font-bold text-gray-900 truncate">{interview.company_name}</h3>
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge()}`}
+            >
+              {interview.status}
+            </span>
           </div>
-          <span
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge()}`}
-          >
-            {interview.status}
-          </span>
-        </div>
+        )}
+
+        {/* Position and status (if no company name) */}
+        {!interview.company_name && (
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              {interview.position && (
+                <div className="font-semibold text-gray-900">{interview.position}</div>
+              )}
+            </div>
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadge()}`}
+            >
+              {interview.status}
+            </span>
+          </div>
+        )}
+
+        {/* Position subtitle (when company name exists) */}
+        {interview.company_name && interview.position && (
+          <div className="text-sm font-medium text-gray-700 -mt-1 mb-1">{interview.position}</div>
+        )}
 
         {/* Interview details */}
         <div className="flex items-center space-x-4 text-sm text-gray-600">
