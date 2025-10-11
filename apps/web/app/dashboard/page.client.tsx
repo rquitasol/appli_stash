@@ -184,11 +184,14 @@ export default function DashboardPage() {
 
             {/* Add Application Button */}
             <button
-              className="px-4 py-2 bg-primary text-accent rounded shadow hover:bg-secondary hover:text-accent border border-primary"
+              className="px-4 py-2 bg-primary text-accent rounded shadow hover:bg-secondary hover:text-accent border border-primary flex items-center gap-2"
               onClick={() => setModalOpen(true)}
               data-add-application
             >
-              Add Application
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              New Application
             </button>
           </div>
         </div>

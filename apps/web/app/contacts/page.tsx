@@ -174,10 +174,13 @@ export default function ContactsPage() {
                 </div>
               </form>
               <button
-                className="px-4 py-2 bg-primary text-accent rounded shadow hover:bg-secondary hover:text-accent border border-primary"
+                className="px-4 py-2 bg-primary text-accent rounded shadow hover:bg-secondary hover:text-accent border border-primary flex items-center gap-2"
                 onClick={() => setModalOpen(true)}
               >
-                Add New Contact
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                New Contact
               </button>
             </div>
           </div>
@@ -254,9 +257,12 @@ export default function ContactsPage() {
                 Start building your professional network by adding your first contact
               </p>
               <button
-                className="px-4 py-2 bg-[#10B981] text-white rounded-lg hover:bg-[#059669]"
+                className="px-4 py-2 bg-[#10B981] text-white rounded-lg hover:bg-[#059669] flex items-center gap-2"
                 onClick={() => setModalOpen(true)}
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
                 Add Your First Contact
               </button>
             </div>
