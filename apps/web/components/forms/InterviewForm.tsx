@@ -52,9 +52,18 @@ const interviewStatuses = [
 interface InterviewFormProps {
   initial?: Partial<Interview>;
   onSuccess?: () => void;
+  onCancel?: () => void;
+  onDelete?: () => void;
+  showDeleteButton?: boolean;
 }
 
-export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
+export function InterviewForm({
+  initial,
+  onSuccess,
+  onCancel,
+  onDelete,
+  showDeleteButton,
+}: InterviewFormProps) {
   const [form, setForm] = useState<Omit<Interview, 'id' | 'user_id'>>({
     ...defaultForm,
     ...initial,
@@ -152,6 +161,45 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
       }, 3000);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!initial?.id) return;
+
+    if (!confirm('Are you sure you want to delete this interview? This action cannot be undone.')) {
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(`/api/interview?id=${initial.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete interview');
+      }
+
+      setSuccess('Interview deleted successfully!');
+      setShowSuccess(true);
+
+      // Call onDelete callback
+      if (onDelete) {
+        setTimeout(() => {
+          onDelete();
+        }, 1000);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while deleting');
     } finally {
       setIsLoading(false);
     }
@@ -278,10 +326,30 @@ export function InterviewForm({ initial, onSuccess }: InterviewFormProps) {
         placeholder="Interview preparation notes, questions to ask, feedback, etc..."
       />
 
-      <div className="flex justify-center mt-4">
-        <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Saving...' : initial?.id ? 'Update Interview' : 'Add Interview'}
+      <div className="flex gap-2 mt-4">
+        {onCancel && (
+          <Button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 bg-gray-500 hover:bg-gray-600 border-gray-500"
+            disabled={isLoading}
+          >
+            Cancel
+          </Button>
+        )}
+        <Button type="submit" disabled={isLoading} className="flex-1">
+          {isLoading ? 'Saving...' : initial?.id ? 'Update' : 'Add'}
         </Button>
+        {showDeleteButton && onDelete && initial?.id && (
+          <Button
+            type="button"
+            onClick={handleDelete}
+            disabled={isLoading}
+            className="px-6 bg-red-600 hover:bg-red-700 border-red-600"
+          >
+            Delete
+          </Button>
+        )}
       </div>
     </form>
   );
